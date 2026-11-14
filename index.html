@@ -497,7 +497,7 @@
 
             firebase.database().ref('config/clave_maestra').once('value').then((snapshot) => {
                 const cloudKey = snapshot.val();
-                const masterKey = cloudKey || "ludovic2026";
+                const masterKey = cloudKey || "ludo";
 
                 if (inputVal === masterKey) {
                     document.getElementById('authScreen').classList.add('hidden');
