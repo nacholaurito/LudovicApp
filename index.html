@@ -446,6 +446,7 @@
                     </div>
                 </div>
 
+                <!-- CAMPO VENCIMIENTO CORREGIDO: ALTURA H-10 Y PADDING HOMOGÉNEO -->
                 <div class="space-y-1">
                     <label class="block text-xs font-medium text-slate-400">Vencimiento</label>
                     <input type="date" id="itemExpiry" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
@@ -905,7 +906,6 @@
             if (nameContainer && !nameContainer.contains(event.target)) {
                 document.getElementById('nameSuggestionsDropdown').classList.add('hidden');
             }
-            // Cerrar también los desplegables de órdenes abiertos al hacer clic fuera
             document.querySelectorAll('[id^="order-dropdown-"]').forEach(drop => {
                 const orderId = drop.id.replace('order-dropdown-', '');
                 const input = document.getElementById(`order-item-name-${orderId}`);
@@ -1195,7 +1195,6 @@
                         <div class="mt-4 pt-4 border-t border-slate-700 space-y-4">
                             <div class="space-y-2">
                                 <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">Agregar insumo a la OC</label>
-                                <!-- TRES ELEMENTOS EN EL MISMO RENGLÓN EXACTO -->
                                 <div class="flex gap-2.5 items-center">
                                     <div class="relative flex-1">
                                         <input type="text" id="order-item-name-${order.id}" oninput="handleOrderInlineSearch(event, '${order.id}')" onkeydown="handleOrderInlineKeydown(event, '${order.id}')" placeholder="Buscar reactivo o insumo..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 h-11 text-xs text-slate-100 focus:outline-none focus:border-lab-500">
