@@ -606,7 +606,7 @@
             appScanner = new LudovicStockScanner();
         }
 
-        // --- MOTOR DE ESCÁNER INDUSTRIAL ZXING (VERSIÓN ORIGINAL ESTABLE) ---
+        // --- MOTOR DE ESCÁNER INDUSTRIAL ZXING ---
         class LudovicStockScanner {
             constructor() {
                 this.codeReader = new ZXing.BrowserMultiFormatReader();
@@ -818,26 +818,65 @@
             }
         }
 
-        // --- PARSER INTELIGENTE GS1 DATAMATRIX (LOTE ENTRE (10) Y (240)) ---
+        // --- PARSER INTELIGENTE DE CÓDIGOS GS1 DATAMATRIX (LIMPIEZA DE CARACTERES GS Y ) ---
         function parseSmartQR(raw) {
+            let cleanRaw = raw
+                .replace(/\u001d/g, '(')
+                .replace(//g, '(')
+                .replace(/\\u001D/g, '(');
+
+            // Si los paréntesis no están formateados con los IDs estándar, aseguramos formato o leemos directo
+            // Normalizar formato si viene con los códigos pegados o con separadores
+            let normalized = cleanRaw;
+            if (!normalized.includes('(01)') && normalized.startsWith('01')) {
+                // Caso común donde vienen los campos en crudo sin paréntesis explícitos
+                // Ej: 0100380740017750172612031083356BE002408L4425
+                let gtin = normalized.substring(2, 16);
+                let expiry = "";
+                let batch = "";
+
+                let idx17 = normalized.indexOf('17');
+                if (idx17 !== -1) {
+                    let expRaw = normalized.substring(idx17 + 2, idx17 + 8);
+                    let yy = "20" + expRaw.substring(0, 2);
+                    let mm = expRaw.substring(2, 4);
+                    let dd = expRaw.substring(4, 6);
+                    expiry = `${yy}-${mm}-${dd}`;
+                }
+
+                let idx10 = normalized.indexOf('10');
+                if (idx10 !== -1) {
+                    let subAfter10 = normalized.substring(idx10 + 2);
+                    let idxNextField = subAfter10.search(/(240|21|310|311|17)/);
+                    if (idxNextField !== -1) {
+                        batch = subAfter10.substring(0, idxNextField).trim();
+                    } else {
+                        batch = subAfter10.trim();
+                    }
+                }
+
+                return { code: gtin, batch: batch, expiry: expiry, raw: raw };
+            }
+
+            // Parser estándar con paréntesis
             let code = raw;
             let batch = "";
             let expiry = "";
 
-            const match10to240 = raw.match(/\(10\)([^\(]+?)(?=\(240\)|\(|$)/);
+            const match10to240 = cleanRaw.match(/\(10\)([^\(]+?)(?=\(240\)|\(|$)/) || cleanRaw.match(/10([A-Za-z0-9]+)(?=240|21|310|$)/);
             if (match10to240 && match10to240[1]) {
                 batch = match10to240[1].trim();
             }
 
-            const match01 = raw.match(/\(01\)(\d{14})/);
+            const match01 = cleanRaw.match(/\(01\)(\d{14})/);
             if (match01) {
                 code = match01[1];
             } else {
-                const match01Short = raw.match(/\(01\)([^\(]+)/);
+                const match01Short = cleanRaw.match(/\(01\)([^\(]+)/);
                 if (match01Short) code = match01Short[1].trim();
             }
 
-            const match17 = raw.match(/\(17\)(\d{6})/);
+            const match17 = cleanRaw.match(/\(17\)(\d{6})/);
             if (match17) {
                 const yy = "20" + match17[1].substring(0, 2);
                 const mm = match17[1].substring(2, 4);
@@ -1441,7 +1480,6 @@
             if (confirm('¿Eliminar este lote?') && dbRef) dbRef.child(id).remove();
         }
 
-        // --- PROCESAMIENTO CORRECTO DEL ESCANEO QUE ABRE O ACTUALIZA EL ÍTEM ---
         function processScannedCode(rawData) {
             const cleanRaw = rawData.trim();
             const parsed = parseSmartQR(cleanRaw);
@@ -1450,14 +1488,12 @@
             const card = document.getElementById('scanResultCard');
             const content = document.getElementById('scanResultContent');
             card.classList.remove('hidden');
-            content.innerText = cleanRaw;
+            content.innerText = `GTIN: ${parsed.code} | Lote: ${parsed.batch} | Vto: ${parsed.expiry}`;
 
-            // Buscar si ya existe un ítem en inventario con este código o lote
             const item = inventoryArray.find(i => i.code === parsed.code || (parsed.batch && i.batch === parsed.batch));
             activeScanItem = item || null;
 
             if (!item) {
-                // Si no existe, abrir modal de nuevo ítem autocompletando con el parser
                 openNewItemModal(parsed);
                 return;
             }
