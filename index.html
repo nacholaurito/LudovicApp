@@ -148,30 +148,27 @@
                 </div>
             </div>
 
-            <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-lg space-y-3.5">
-                <div class="flex flex-col sm:flex-row gap-3">
-                    <div class="relative flex-1">
-                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-sm"></i>
-                        <input type="text" id="searchInput" oninput="filterInventory()" placeholder="Buscar reactivo, código o lote..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-11 pr-4 h-11 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-lab-500">
-                    </div>
+            <!-- BÚSQUEDA Y DESPLEGABLES EN UNA MISMA LÍNEA EN VERSIÓN WEB -->
+            <div class="bg-slate-800 p-4 rounded-2xl border border-slate-700 shadow-lg flex flex-col md:flex-row gap-3 items-center">
+                <div class="relative flex-1 w-full">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-sm"></i>
+                    <input type="text" id="searchInput" oninput="filterInventory()" placeholder="Buscar reactivo, código o lote..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-11 pr-4 h-11 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-lab-500">
                 </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <select id="typeFilter" onchange="filterInventory()" class="bg-slate-900 border border-slate-700 rounded-xl px-4 h-11 text-sm text-slate-200 focus:outline-none focus:border-lab-500">
-                        <option value="">Todos los tipos</option>
-                        <option value="Reactivo">Reactivo</option>
-                        <option value="Calibrador">Calibrador</option>
-                        <option value="Control">Control</option>
-                        <option value="Consumible">Consumible</option>
-                    </select>
-                    <select id="sectionFilter" onchange="filterInventory()" class="bg-slate-900 border border-slate-700 rounded-xl px-4 h-11 text-sm text-slate-200 focus:outline-none focus:border-lab-500">
-                        <option value="">Todas las secciones</option>
-                        <option value="Química">Química Clínica</option>
-                        <option value="Hematología">Hematología</option>
-                        <option value="Inmunología">Inmunología</option>
-                        <option value="Bacteriología">Bacteriología</option>
-                        <option value="Biología Molecular">Biología Molecular</option>
-                    </select>
-                </div>
+                <select id="typeFilter" onchange="filterInventory()" class="bg-slate-900 border border-slate-700 rounded-xl px-4 h-11 text-sm text-slate-200 focus:outline-none focus:border-lab-500 w-full md:w-52 shrink-0">
+                    <option value="">Todos los tipos</option>
+                    <option value="Reactivo">Reactivo</option>
+                    <option value="Calibrador">Calibrador</option>
+                    <option value="Control">Control</option>
+                    <option value="Consumible">Consumible</option>
+                </select>
+                <select id="sectionFilter" onchange="filterInventory()" class="bg-slate-900 border border-slate-700 rounded-xl px-4 h-11 text-sm text-slate-200 focus:outline-none focus:border-lab-500 w-full md:w-56 shrink-0">
+                    <option value="">Todas las secciones</option>
+                    <option value="Química">Química Clínica</option>
+                    <option value="Hematología">Hematología</option>
+                    <option value="Inmunología">Inmunología</option>
+                    <option value="Bacteriología">Bacteriología</option>
+                    <option value="Biología Molecular">Biología Molecular</option>
+                </select>
             </div>
 
             <div id="inventoryGroupedContainer" class="space-y-3.5"></div>
@@ -225,15 +222,14 @@
                             <i class="fa-solid fa-bolt"></i>
                         </button>
                     </div>
-                    <!-- Selector de cámaras oculto si no hay varios dispositivos para evitar texto molesto -->
                     <select id="select-camera" onchange="appScanner.onCameraSelectChanged(event)" class="w-full bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-xl px-3 h-10 focus:outline-none focus:border-lab-500 hidden">
                         <option value="">Buscando cámaras...</option>
                     </select>
                 </div>
 
-                <!-- ÚNICO BOTÓN DE ENTRADA MANUAL -->
+                <!-- BOTÓN DE ENTRADA MANUAL QUE ABRE EL MODAL COMPLETO DE ALTA/EDICIÓN -->
                 <div class="pt-3 border-t border-slate-700">
-                    <button onclick="openManualInputModal()" class="w-full bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow transition">
+                    <button onclick="openNewItemModal()" class="w-full bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow transition">
                         <i class="fa-solid fa-keyboard text-lab-500"></i> Ingresar manualmente
                     </button>
                 </div>
@@ -245,9 +241,8 @@
             </div>
         </section>
 
-        <!-- 3. PESTAÑA ÓRDENES DE COMPRA -->
+        <!-- 3. PESTAÑA ÓRDENES DE COMPRA (ESTILO HOMOGÉNEO Y OSCURO) -->
         <section id="tab-orders" class="tab-content hidden space-y-5">
-            <!-- CABECERA DE SECCIÓN OPTIMIZADA -->
             <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                     <h2 class="text-base font-bold flex items-center gap-2 text-white">
@@ -260,7 +255,6 @@
                 </button>
             </div>
 
-            <!-- CONTENEDOR DE TARJETAS DE OC -->
             <div id="ordersContainer" class="space-y-4"></div>
             
             <div id="emptyOrders" class="hidden p-16 text-center text-slate-400 bg-slate-800/40 rounded-2xl border border-slate-700/50">
@@ -301,7 +295,7 @@
                 <p class="text-xs text-slate-400">Agregá los nombres oficiales para mantener la homogeneidad.</p>
                 
                 <div class="flex gap-2">
-                    <input type="text" id="newCatalogName" placeholder="Ej: Architect rHTLV-I/II" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                    <input type="text" id="newCatalogName" placeholder="Ej: Architect rHTLV-I/II" onkeypress="if(event.key==='Enter') addCatalogName()" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
                     <button onclick="addCatalogName()" class="bg-lab-600 hover:bg-lab-700 text-white px-4 h-10 rounded-xl text-xs font-semibold shadow flex items-center gap-1 shrink-0 transition">
                         <i class="fa-solid fa-plus"></i> Agregar
                     </button>
@@ -338,24 +332,7 @@
         </button>
     </nav>
 
-    <!-- MODAL DE ENTRADA MANUAL -->
-    <div id="manualInputModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-50 p-3">
-        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="text-base font-bold text-white">Ingresar Código o Lote</h3>
-                <button onclick="closeManualInputModal()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-xl"></i></button>
-            </div>
-            <div class="space-y-3">
-                <input type="text" id="manualScanInput" onkeypress="handleManualScanKeyModal(event)" placeholder="Escribí código o lote..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-11 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
-                <div class="flex gap-2">
-                    <button type="button" onclick="closeManualInputModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-xl text-sm font-semibold transition">Cancelar</button>
-                    <button type="button" onclick="processModalManualInput()" class="flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-xl text-sm font-semibold shadow transition">Procesar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL NUEVA ORDEN DE COMPRA -->
+    <!-- MODAL NUEVA ORDEN DE COMPRA (ESTILO HOMOGÉNEO Y OSCURO) -->
     <div id="orderModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-50 p-3">
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4">
             <div class="flex justify-between items-center">
@@ -366,15 +343,15 @@
             <div class="space-y-3">
                 <div class="space-y-1">
                     <label class="block text-xs font-medium text-slate-400">N° de Orden / OC</label>
-                    <input type="text" id="orderNumber" placeholder="OC-2026-089" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
+                    <input type="text" id="orderNumber" placeholder="OC-2026-089" onkeypress="if(event.key==='Enter') saveNewOrderHeader()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
                 </div>
                 <div class="space-y-1">
                     <label class="block text-xs font-medium text-slate-400">Proveedor</label>
-                    <input type="text" id="orderProvider" placeholder="Abbott / Roche..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                    <input type="text" id="orderProvider" placeholder="Abbott / Roche..." onkeypress="if(event.key==='Enter') saveNewOrderHeader()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
                 </div>
                 <div class="space-y-1">
                     <label class="block text-xs font-medium text-slate-400">Vencimiento estimado</label>
-                    <input type="date" id="orderExpiry" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                    <input type="date" id="orderExpiry" onkeypress="if(event.key==='Enter') saveNewOrderHeader()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
                 </div>
 
                 <div class="flex gap-2 pt-2">
@@ -395,7 +372,7 @@
             <div id="scanModalBody" class="space-y-1.5 text-xs text-slate-300 bg-slate-900 p-4 rounded-xl border border-slate-700"></div>
             <div id="qtyContainer" class="space-y-1">
                 <label id="qtyLabel" class="block text-xs font-medium text-slate-400">Cantidad a agregar</label>
-                <input type="number" id="scanModalQty" min="1" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-11 text-lg font-bold text-center text-slate-100 focus:outline-none focus:border-lab-500">
+                <input type="number" id="scanModalQty" min="1" value="1" onkeypress="if(event.key==='Enter') executeScanAction()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-11 text-lg font-bold text-center text-slate-100 focus:outline-none focus:border-lab-500">
             </div>
             <div class="flex gap-2 pt-1">
                 <button type="button" onclick="closeScanActionModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-xl text-sm font-semibold transition">Cancelar</button>
@@ -406,7 +383,7 @@
         </div>
     </div>
 
-    <!-- MODAL NUEVO / EDITAR ÍTEM -->
+    <!-- MODAL NUEVO / EDITAR ÍTEM (SOPORTA NAVEGACIÓN Y ENTER) -->
     <div id="itemModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-50 p-3">
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center">
@@ -419,7 +396,7 @@
                     <label class="block text-xs font-medium text-slate-400">Código / GTIN</label>
                     <div class="flex items-center gap-2">
                         <input type="text" id="itemCode" required class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
-                        <button type="button" onclick="openNewItemModal()" class="bg-slate-700 hover:bg-slate-600 text-white px-3.5 h-10 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shadow shrink-0 transition" title="Generar aleatorio">
+                        <button type="button" onclick="document.getElementById('itemCode').value='LAB'+Math.floor(100000+Math.random()*900000)" class="bg-slate-700 hover:bg-slate-600 text-white px-3.5 h-10 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shadow shrink-0 transition" title="Generar aleatorio">
                             <i class="fa-solid fa-wand-magic-sparkles"></i>
                         </button>
                     </div>
@@ -428,7 +405,7 @@
                 <div class="relative space-y-1" id="nameComboboxContainer">
                     <label class="block text-xs font-medium text-slate-400">Nombre del Reactivo</label>
                     <div class="relative">
-                        <input type="text" id="itemName" required autocomplete="off" oninput="handleNameSearchInput(event)" onfocus="handleNameSearchInput(event)" placeholder="Escribí para buscar..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-3.5 pr-8 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                        <input type="text" id="itemName" required autocomplete="off" oninput="handleNameSearchInput(event)" onfocus="handleNameSearchInput(event)" onkeydown="handleNameKeyNavigation(event)" placeholder="Escribí para buscar..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-3.5 pr-8 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
                         <i class="fa-solid fa-chevron-down absolute right-3.5 top-3.5 text-xs text-slate-500 pointer-events-none"></i>
                     </div>
                     <div id="nameSuggestionsDropdown" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-h-40 overflow-y-auto z-50 divide-y divide-slate-800"></div>
@@ -480,7 +457,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT PRINCIPAL -->
+    <!-- SCRIPT DE LA APLICACIÓN -->
     <script>
         let inventoryMap = {}; 
         let inventoryArray = []; 
@@ -488,7 +465,6 @@
         let catalogArray = [];
         let ordersMap = {};
         let ordersArray = [];
-        let openOrderAccordions = {};
         let openAccordions = {};
         let activeKpiFilter = 'all';
 
@@ -499,6 +475,7 @@
         let activeScanItem = null;
         let activeScanParsed = null;
         let appScanner = null;
+        let selectedDropdownIndex = -1;
 
         const firebaseConfig = {
             databaseURL: "https://labstock-80756-default-rtdb.firebaseio.com",
@@ -629,10 +606,10 @@
             appScanner = new LudovicStockScanner();
         }
 
-        // --- CONTROLADOR DE ESCÁNER INDUSTRIAL ZXING ---
+        // --- MOTOR DE ESCÁNER INDUSTRIAL ZXING ORIGINAL ---
         class LudovicStockScanner {
             constructor() {
-                this.codeReader = null;
+                this.codeReader = new ZXing.BrowserMultiFormatReader();
                 this.isScanning = false;
                 this.selectedDeviceId = null;
                 this.availableDevices = [];
@@ -649,26 +626,13 @@
                 this.selectCamera = document.getElementById('select-camera');
                 this.btnToggleText = document.getElementById('btn-toggle-text');
 
-                this.initZXing();
+                this.initZXingEvents();
             }
 
-            initZXing() {
-                const hints = new Map();
-                const possibleFormats = [
-                    ZXing.BarcodeFormat.DATA_MATRIX,
-                    ZXing.BarcodeFormat.EAN_13,
-                    ZXing.BarcodeFormat.CODE_128,
-                    ZXing.BarcodeFormat.QR_CODE
-                ];
-                hints.set(ZXing.DecodeHintType.POSSIBLE_FORMATS, possibleFormats);
-                hints.set(ZXing.DecodeHintType.TRY_HARDER, true);
-
-                this.codeReader = new ZXing.BrowserMultiFormatReader(hints);
-
+            initZXingEvents() {
                 window.addEventListener('click', () => this.initAudio(), { once: true });
                 window.addEventListener('touchstart', () => this.initAudio(), { once: true });
                 document.addEventListener('visibilitychange', () => this.handleVisibilityChange());
-
                 this.listVideoInputDevices();
             }
 
@@ -701,16 +665,7 @@
             async listVideoInputDevices() {
                 try {
                     this.availableDevices = await this.codeReader.listVideoInputDevices();
-                    this.selectCamera.innerHTML = '';
-                    if (this.availableDevices.length === 0) {
-                        this.selectCamera.classList.add('hidden');
-                        return;
-                    }
-                    if (this.availableDevices.length > 1) {
-                        this.selectCamera.classList.remove('hidden');
-                    } else {
-                        this.selectCamera.classList.add('hidden');
-                    }
+                    if (this.availableDevices.length === 0) return;
 
                     let selectedDevice = this.availableDevices.find(device => 
                         /back|rear|trasera|environment|principal/i.test(device.label)
@@ -728,10 +683,7 @@
                         this.selectCamera.appendChild(option);
                     });
                     this.btnSwitch.disabled = this.availableDevices.length <= 1;
-                } catch (err) {
-                    console.warn("Error enumerando cámaras:", err);
-                    this.selectCamera.classList.add('hidden');
-                }
+                } catch (err) {}
             }
 
             async toggleScanner() {
@@ -771,7 +723,6 @@
                     this.btnToggle.className = "flex-1 bg-rose-600 hover:bg-rose-700 text-white h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow transition";
                     this.checkTorchAvailability();
                 } catch (err) {
-                    console.error("Error al arrancar escáner:", err);
                     await this.stopScanner();
                     alert("No se pudo iniciar la cámara. Verifique permisos o conexión HTTPS.");
                 }
@@ -820,9 +771,7 @@
                     await track.applyConstraints({ advanced: [{ torch: this.torchEnabled }] });
                     this.btnTorch.classList.toggle('bg-amber-500', this.torchEnabled);
                     this.btnTorch.classList.toggle('text-slate-950', this.torchEnabled);
-                } catch (err) {
-                    console.warn("Linterna no soportada");
-                }
+                } catch (err) {}
             }
 
             async switchCamera() {
@@ -852,6 +801,36 @@
                     }
                 }
             }
+        }
+
+        // --- PARSER INTELIGENTE GS1 ORIGINAL (LOTE ENTRE (10) Y (240)) ---
+        function parseSmartQR(raw) {
+            let code = raw;
+            let batch = "";
+            let expiry = "";
+
+            const match10to240 = raw.match(/\(10\)([^\(]+?)(?=\(240\)|\(|$)/);
+            if (match10to240 && match10to240[1]) {
+                batch = match10to240[1].trim();
+            }
+
+            const match01 = raw.match(/\(01\)(\d{14})/);
+            if (match01) {
+                code = match01[1];
+            } else {
+                const match01Short = raw.match(/\(01\)([^\(]+)/);
+                if (match01Short) code = match01Short[1].trim();
+            }
+
+            const match17 = raw.match(/\(17\)(\d{6})/);
+            if (match17) {
+                const yy = "20" + match17[1].substring(0, 2);
+                const mm = match17[1].substring(2, 4);
+                const dd = match17[1].substring(4, 6);
+                expiry = `${yy}-${mm}-${dd}`;
+            }
+
+            return { code, batch, expiry, raw };
         }
 
         function updateCloudStatus(status, text) {
@@ -895,6 +874,46 @@
         }
 
         function handleNameSearchInput(event) {
+            selectedDropdownIndex = -1;
+            renderSuggestions();
+        }
+
+        // --- NAVEGACIÓN CON FLECHAS Y ENTER EN AUTOCOMPLETADO ---
+        function handleNameKeyNavigation(event) {
+            const dropdown = document.getElementById('nameSuggestionsDropdown');
+            if (dropdown.classList.contains('hidden')) return;
+            const items = dropdown.querySelectorAll('div[data-name-item]');
+            if (items.length === 0) return;
+
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                selectedDropdownIndex = (selectedDropdownIndex + 1) % items.length;
+                updateDropdownSelection(items);
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                selectedDropdownIndex = (selectedDropdownIndex - 1 + items.length) % items.length;
+                updateDropdownSelection(items);
+            } else if (event.key === 'Enter') {
+                event.preventDefault();
+                if (selectedDropdownIndex >= 0 && selectedDropdownIndex < items.length) {
+                    items[selectedDropdownIndex].click();
+                } else if (items.length > 0) {
+                    items[0].click();
+                }
+            }
+        }
+
+        function updateDropdownSelection(items) {
+            items.forEach((item, index) => {
+                if (index === selectedDropdownIndex) {
+                    item.classList.add('bg-slate-800', 'text-lab-400');
+                } else {
+                    item.classList.remove('bg-slate-800', 'text-lab-400');
+                }
+            });
+        }
+
+        function renderSuggestions() {
             const input = document.getElementById('itemName');
             const dropdown = document.getElementById('nameSuggestionsDropdown');
             const query = input.value.trim().toLowerCase();
@@ -902,18 +921,21 @@
             const matches = query.length === 0 ? allNames : allNames.filter(n => n.toLowerCase().includes(query));
             
             if (matches.length === 0) {
-                dropdown.innerHTML = `<div class="p-3 text-xs text-slate-400">Usar: <b class="text-white">"${input.value}"</b></div>`;
+                dropdown.innerHTML = `<div class="p-2.5 text-xs text-slate-400">Usar: <b class="text-white">"${input.value}"</b></div>`;
                 dropdown.classList.remove('hidden');
                 return;
             }
             dropdown.innerHTML = '';
-            matches.forEach(name => {
+            matches.forEach((name, idx) => {
                 const itemDiv = document.createElement('div');
-                itemDiv.className = "px-3.5 py-2.5 text-xs text-slate-200 hover:bg-slate-800 hover:text-lab-400 cursor-pointer font-medium transition";
+                itemDiv.setAttribute('data-name-item', 'true');
+                itemDiv.className = "px-3.5 py-2.5 text-xs cursor-pointer font-medium text-slate-200 hover:bg-slate-800 hover:text-lab-400 transition";
                 itemDiv.innerText = name;
-                itemDiv.onclick = () => {
+                itemDiv.onclick = (e) => {
+                    e.stopPropagation();
                     document.getElementById('itemName').value = name;
                     dropdown.classList.add('hidden');
+                    selectedDropdownIndex = -1;
                 };
                 dropdown.appendChild(itemDiv);
             });
@@ -923,7 +945,8 @@
         function closeAllDropdownsOutside(event) {
             const nameContainer = document.getElementById('nameComboboxContainer');
             if (nameContainer && !nameContainer.contains(event.target)) {
-                document.getElementById('nameSuggestionsDropdown').classList.add('hidden');
+                const dropdown = document.getElementById('nameSuggestionsDropdown');
+                if (dropdown) dropdown.classList.add('hidden');
             }
         }
 
@@ -955,13 +978,14 @@
             }
         }
 
-        // --- GESTIÓN DE ÓRDENES DE COMPRA ---
+        // --- GESTIÓN DE ÓRDENES DE COMPRA (ESTILO HOMOGÉNEO Y FUNCIONAL CON ENTER) ---
         function openNewOrderModal() {
             document.getElementById('orderNumber').value = '';
             document.getElementById('orderProvider').value = '';
             document.getElementById('orderExpiry').value = '';
             document.getElementById('orderModal').classList.remove('hidden');
             document.getElementById('orderModal').classList.add('flex');
+            document.getElementById('orderNumber').focus();
         }
 
         function closeNewOrderModal() {
@@ -975,133 +999,20 @@
             const expiry = document.getElementById('orderExpiry').value;
 
             if (!orderNumber || !provider) {
-                alert("Completá el N° de Orden y el Proveedor.");
+                alert('Por favor complete el N° de orden y el proveedor.');
                 return;
             }
 
             const newOrder = {
-                orderNumber: orderNumber,
-                provider: provider,
-                expiry: expiry || '',
-                items: [],
+                orderNumber,
+                provider,
+                expiry: expiry || 'Sin fecha',
                 status: 'Pendiente',
                 date: new Date().toLocaleDateString()
             };
 
-            if (ordersRef) {
-                ordersRef.push(newOrder);
-            }
+            if (ordersRef) ordersRef.push(newOrder);
             closeNewOrderModal();
-        }
-
-        function toggleOrderAccordion(orderId) {
-            openOrderAccordions[orderId] = !openOrderAccordions[orderId];
-            updateOrdersUI();
-        }
-
-        function addOrUpdateItemToOrder(orderId) {
-            const nameInput = document.getElementById(`order-item-name-${orderId}`);
-            const qtyInput = document.getElementById(`order-item-qty-${orderId}`);
-            if (!nameInput || !qtyInput) return;
-
-            const name = nameInput.value.trim();
-            const qty = parseInt(qtyInput.value) || 1;
-
-            if (!name) {
-                alert("Escribí o seleccioná un nombre de ítem.");
-                return;
-            }
-
-            const order = ordersMap[orderId];
-            if (!order) return;
-
-            let items = Array.isArray(order.items) ? [...order.items] : [];
-            const existingIdx = items.findIndex(i => i.name.toLowerCase() === name.toLowerCase());
-            
-            if (existingIdx !== -1) {
-                items[existingIdx].qty += qty;
-            } else {
-                items.push({ name: name, qty: qty });
-            }
-
-            ordersRef.child(orderId).update({ items: items });
-            nameInput.value = '';
-            qtyInput.value = '1';
-        }
-
-        function removeOrderItem(orderId, itemIndex) {
-            const order = ordersMap[orderId];
-            if (!order || !order.items) return;
-
-            let items = [...order.items];
-            items.splice(itemIndex, 1);
-            ordersRef.child(orderId).update({ items: items });
-        }
-
-        // --- AUTOMATIZACIÓN: DESCONTAR DE OC AL AGREGAR STOCK ---
-        function deductFromActiveOrders(itemName, addedQty) {
-            let remainingToAdd = addedQty;
-            ordersArray.forEach(order => {
-                if (order.status !== 'Recibida' && Array.isArray(order.items)) {
-                    let itemsUpdated = false;
-                    let items = order.items.map(it => {
-                        if (remainingToAdd > 0 && it.name.toLowerCase() === itemName.toLowerCase()) {
-                            itemsUpdated = true;
-                            if (remainingToAdd >= it.qty) {
-                                remainingToAdd -= it.qty;
-                                return null;
-                            } else {
-                                let desc = remainingToAdd;
-                                remainingToAdd = 0;
-                                return { ...it, qty: it.qty - desc };
-                            }
-                        }
-                        return it;
-                    }).filter(it => it !== null);
-
-                    if (itemsUpdated) {
-                        const newStatus = items.length === 0 ? 'Recibida' : 'Pendiente';
-                        ordersRef.child(order.id).update({
-                            items: items,
-                            status: newStatus
-                        });
-                    }
-                }
-            });
-        }
-
-        function deleteOrder(id) {
-            if (confirm('¿Eliminar esta orden de compra completa?') && ordersRef) {
-                ordersRef.child(id).remove();
-            }
-        }
-
-        function handleOrderInlineSearch(event, orderId) {
-            const input = event.target;
-            const dropdown = document.getElementById(`order-dropdown-${orderId}`);
-            if (!dropdown) return;
-
-            const query = input.value.trim().toLowerCase();
-            const allNames = getAllStandardNames();
-            const matches = query.length === 0 ? allNames : allNames.filter(n => n.toLowerCase().includes(query));
-
-            if (matches.length === 0) {
-                dropdown.classList.add('hidden');
-                return;
-            }
-
-            dropdown.innerHTML = '';
-            matches.forEach(name => {
-                const div = document.createElement('div');
-                div.className = "px-3.5 py-2.5 text-xs text-slate-200 hover:bg-slate-800 hover:text-lab-400 cursor-pointer font-medium transition";
-                div.innerText = name;
-                div.onclick = () => {
-                    input.value = name;
-                    dropdown.classList.add('hidden');
-                };
-                dropdown.appendChild(div);
-            });
-            dropdown.classList.remove('hidden');
         }
 
         function updateOrdersUI() {
@@ -1119,77 +1030,43 @@
             ordersArray.forEach(order => {
                 const isReceived = order.status === 'Recibida';
                 const statusBadge = isReceived 
-                    ? '<span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap">Recibida</span>'
-                    : '<span class="bg-amber-950 text-amber-400 border border-amber-800 text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap">Pendiente</span>';
-
-                const isOpen = openOrderAccordions[order.id] || false;
-                const itemsCount = Array.isArray(order.items) ? order.items.length : 0;
-
-                let itemsHtml = '';
-                if (isOpen) {
-                    let rowsHtml = '';
-                    if (itemsCount > 0) {
-                        order.items.forEach((it, idx) => {
-                            rowsHtml += `
-                                <div class="flex justify-between items-center py-2.5 px-4 bg-slate-950 rounded-xl border border-slate-700/60 text-xs gap-3">
-                                    <div class="flex items-center gap-3 min-w-0 flex-1">
-                                        <span class="text-slate-200 font-semibold truncate">${it.name}</span>
-                                    </div>
-                                    <div class="flex items-center gap-3 shrink-0">
-                                        <span class="font-mono font-bold text-lab-400 bg-lab-950/60 border border-lab-800/60 px-2.5 py-1 rounded-lg whitespace-nowrap">${it.qty} u. pendientes</span>
-                                        <button onclick="removeOrderItem('${order.id}', ${idx})" class="text-rose-400 hover:text-rose-300 p-1.5" title="Quitar ítem"><i class="fa-solid fa-xmark text-sm"></i></button>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                    } else {
-                        rowsHtml = `<p class="text-center text-xs text-slate-500 py-4">No hay insumos pendientes en esta orden.</p>`;
-                    }
-
-                    itemsHtml = `
-                        <div class="mt-4 pt-4 border-t border-slate-700 space-y-4">
-                            <div class="space-y-2">
-                                <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">Agregar insumo a la OC</label>
-                                <!-- TRES ELEMENTOS EN EL MISMO RENGLÓN EXACTO -->
-                                <div class="flex gap-2.5 items-center">
-                                    <div class="relative flex-1">
-                                        <input type="text" id="order-item-name-${order.id}" oninput="handleOrderInlineSearch(event, '${order.id}')" placeholder="Buscar reactivo o insumo..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 h-11 text-xs text-slate-100 focus:outline-none focus:border-lab-500">
-                                        <div id="order-dropdown-${order.id}" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-950 border border-slate-700 rounded-xl shadow-2xl max-h-40 overflow-y-auto z-50 divide-y divide-slate-800"></div>
-                                    </div>
-                                    <input type="number" id="order-item-qty-${order.id}" min="1" value="1" placeholder="Cant." class="w-24 bg-slate-950 border border-slate-700 rounded-xl px-3 h-11 text-xs text-center font-bold text-slate-100 focus:outline-none focus:border-lab-500 shrink-0">
-                                    <button onclick="addOrUpdateItemToOrder('${order.id}')" class="bg-sky-600 hover:bg-sky-700 text-white px-5 h-11 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 shadow transition shrink-0">
-                                        <i class="fa-solid fa-plus"></i> Sumar Insumo
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="space-y-2.5 max-h-52 overflow-y-auto">
-                                ${rowsHtml}
-                            </div>
-                        </div>
-                    `;
-                }
+                    ? '<span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full">Recibida</span>'
+                    : '<span class="bg-amber-950 text-amber-400 border border-amber-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full">Pendiente</span>';
 
                 const card = document.createElement('div');
-                card.className = "bg-slate-800 border border-slate-700 rounded-2xl p-5 md:p-6 space-y-4 shadow-md transition hover:border-slate-600";
+                card.className = "bg-slate-800 border border-slate-700 rounded-2xl p-4 sm:p-5 space-y-3 shadow-md";
                 card.innerHTML = `
-                    <div class="flex justify-between items-start cursor-pointer" onclick="toggleOrderAccordion('${order.id}')">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center gap-3">
-                                <span class="text-xs font-mono text-lab-400 font-bold tracking-wide">${order.orderNumber}</span>
+                    <div class="flex justify-between items-start">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-mono text-lab-400 font-bold">${order.orderNumber}</span>
                                 ${statusBadge}
                             </div>
-                            <h4 class="text-base font-bold text-white">${order.provider}</h4>
-                            <p class="text-xs text-slate-400">Vto: ${order.expiry || 'No especificado'} &bull; Ítems pendientes: ${itemsCount}</p>
+                            <h4 class="text-sm font-bold text-white">${order.provider}</h4>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="event.stopPropagation(); deleteOrder('${order.id}')" class="text-rose-400 hover:text-rose-300 text-sm p-2 transition" title="Eliminar OC"><i class="fa-solid fa-trash"></i></button>
-                            <i class="fa-solid fa-chevron-${isOpen ? 'up' : 'down'} text-xs text-slate-400 p-2 transition"></i>
-                        </div>
+                        <button onclick="deleteOrder('${order.id}')" class="text-rose-400 hover:text-rose-300 text-xs p-1.5" title="Eliminar OC"><i class="fa-solid fa-trash"></i></button>
                     </div>
-                    ${itemsHtml}
+                    <div class="text-xs text-slate-300 bg-slate-900 p-3 rounded-xl border border-slate-700/80 flex justify-between items-center">
+                        <span>Vencimiento estimado: <b class="text-white">${order.expiry || 'N/A'}</b></span>
+                        <span>Creada: ${order.date || 'N/A'}</span>
+                    </div>
+                    <div class="flex justify-end pt-1">
+                        <button onclick="toggleOrderStatus('${order.id}', '${order.status}')" class="text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 px-3.5 py-1.5 rounded-xl font-medium transition">
+                            Cambiar a ${isReceived ? 'Pendiente' : 'Recibida'}
+                        </button>
+                    </div>
                 `;
                 container.appendChild(card);
             });
+        }
+
+        function toggleOrderStatus(id, currentStatus) {
+            const nextStatus = currentStatus === 'Recibida' ? 'Pendiente' : 'Recibida';
+            if (ordersRef) ordersRef.child(id).update({ status: nextStatus });
+        }
+
+        function deleteOrder(id) {
+            if (confirm('¿Eliminar esta orden de compra?') && ordersRef) ordersRef.child(id).remove();
         }
 
         function switchTab(tabId) {
@@ -1209,14 +1086,10 @@
 
         function getTypeBadgeClass(type) {
             switch(type) {
-                case 'Calibrador':
-                    return 'bg-sky-950 text-sky-400 border-sky-800';
-                case 'Control':
-                    return 'bg-purple-950 text-purple-400 border-purple-800';
-                case 'Consumible':
-                    return 'bg-amber-950 text-amber-400 border-amber-800';
-                default: 
-                    return 'bg-emerald-950 text-emerald-400 border-emerald-800';
+                case 'Calibrador': return 'bg-sky-950 text-sky-400 border-sky-800';
+                case 'Control': return 'bg-purple-950 text-purple-400 border-purple-800';
+                case 'Consumible': return 'bg-amber-950 text-amber-400 border-amber-800';
+                default: return 'bg-emerald-950 text-emerald-400 border-emerald-800';
             }
         }
 
@@ -1266,52 +1139,52 @@
                 });
 
                 let headerBadge = `<span class="text-xs text-slate-400 font-medium whitespace-nowrap">${group.lots.length} lote(s)</span>`;
-                if (hasExpired) headerBadge = `<span class="bg-rose-950 text-rose-400 border border-rose-800 text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">Vencido</span>`;
-                else if (minDays <= 30) headerBadge = `<span class="bg-amber-950 text-amber-400 border border-amber-800 text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">Vence en ${minDays}d</span>`;
+                if (hasExpired) headerBadge = `<span class="bg-rose-950 text-rose-400 border border-rose-800 text-xs font-bold px-2.5 py-0.5 rounded-full">Vencido</span>`;
+                else if (minDays <= 30) headerBadge = `<span class="bg-amber-950 text-amber-400 border border-amber-800 text-xs font-bold px-2.5 py-0.5 rounded-full">Vence en ${minDays}d</span>`;
 
                 const typeBadgeClass = getTypeBadgeClass(group.type);
                 const isOpen = openAccordions[name] || false;
                 const card = document.createElement('div');
-                card.className = "bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-md";
+                card.className = "bg-slate-800 border border-slate-700/80 rounded-2xl overflow-hidden shadow-md";
                 
                 let lotsHtml = '';
                 group.lots.forEach(lot => {
                     lotsHtml += `
-                        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-700/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
-                            <div class="space-y-1 text-sm">
-                                <div class="text-white font-semibold flex items-center gap-2.5">
+                        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-700/70 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                            <div class="space-y-1 text-xs">
+                                <div class="text-white font-semibold flex items-center gap-2">
                                     <span>Lote: <span class="font-mono text-lab-400 font-bold">${lot.batch}</span></span>
-                                    <span class="text-xs text-slate-500">(${lot.code})</span>
+                                    <span class="text-slate-500">(${lot.code})</span>
                                 </div>
-                                <div class="text-slate-400 text-xs">Vencimiento: ${lot.expiry}</div>
+                                <div class="text-slate-400">Vencimiento: ${lot.expiry}</div>
                             </div>
-                            <div class="flex items-center justify-between w-full sm:w-auto gap-4">
-                                <span class="font-bold text-sm ${lot.stock <= 3 ? 'text-rose-400 bg-rose-950 px-3 py-1 rounded-lg border border-rose-900' : 'text-slate-200'}">${lot.stock} u.</span>
-                                <div class="flex gap-2">
-                                    <button onclick="adjustStockCloud('${lot.id}', 1, 'add')" class="w-9 h-9 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs transition" title="Sumar 1"><i class="fa-solid fa-plus"></i></button>
-                                    <button onclick="adjustStockCloud('${lot.id}', -1, 'deduct')" class="w-9 h-9 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs transition" title="Restar 1"><i class="fa-solid fa-minus"></i></button>
-                                    <button onclick="openEditItemModal('${lot.id}')" class="w-9 h-9 bg-slate-700 hover:bg-slate-600 text-sky-400 rounded-xl text-xs transition" title="Editar"><i class="fa-solid fa-pen"></i></button>
-                                    <button onclick="deleteItemCloud('${lot.id}')" class="w-9 h-9 bg-slate-700 hover:bg-rose-950 text-rose-400 rounded-xl text-xs transition" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                            <div class="flex items-center justify-between w-full sm:w-auto gap-3">
+                                <span class="font-bold text-xs ${lot.stock <= 3 ? 'text-rose-400 bg-rose-950 px-2.5 py-1 rounded-md border border-rose-900' : 'text-slate-200'}">${lot.stock} u.</span>
+                                <div class="flex gap-1.5">
+                                    <button onclick="adjustStockCloud('${lot.id}', 1, 'add')" class="w-8 h-8 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-xs transition" title="Sumar 1"><i class="fa-solid fa-plus"></i></button>
+                                    <button onclick="adjustStockCloud('${lot.id}', -1, 'deduct')" class="w-8 h-8 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-xs transition" title="Restar 1"><i class="fa-solid fa-minus"></i></button>
+                                    <button onclick="openEditItemModal('${lot.id}')" class="w-8 h-8 bg-slate-700 hover:bg-slate-600 text-sky-400 rounded-lg text-xs transition" title="Editar"><i class="fa-solid fa-pen"></i></button>
+                                    <button onclick="deleteItemCloud('${lot.id}')" class="w-8 h-8 bg-slate-700 hover:bg-rose-950 text-rose-400 rounded-lg text-xs transition" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
                                 </div>
                             </div>
                         </div>`;
                 });
 
                 card.innerHTML = `
-                    <div onclick="toggleAccordion('${name.replace(/'/g, "\\'")}')" class="p-5 grid grid-cols-12 gap-3 items-center cursor-pointer hover:bg-slate-750 transition">
+                    <div onclick="toggleAccordion('${name.replace(/'/g, "\\'")}')" class="p-4 sm:p-5 grid grid-cols-12 gap-2 items-center cursor-pointer hover:bg-slate-750 transition">
                         <div class="col-span-8 space-y-2">
-                            <div class="flex items-center gap-2.5 flex-wrap">
-                                <span class="text-xs px-3 py-1 rounded-full border ${typeBadgeClass} font-semibold">${group.type}</span>
-                                <span class="text-xs px-3 py-1 rounded-full border bg-slate-900 text-slate-300 border-slate-700 font-medium">${group.section}</span>
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="text-[10px] px-2.5 py-0.5 rounded-full border ${typeBadgeClass} font-semibold">${group.type}</span>
+                                <span class="text-[10px] px-2.5 py-0.5 rounded-full border bg-slate-900 text-slate-300 border-slate-700 font-medium">${group.section}</span>
                             </div>
-                            <h3 class="text-base font-bold text-white leading-snug">${group.name}</h3>
+                            <h3 class="text-sm font-bold text-white leading-snug">${group.name}</h3>
                         </div>
-                        <div class="col-span-4 flex flex-col items-end justify-center text-right space-y-1.5">
+                        <div class="col-span-4 flex flex-col items-end justify-center text-right space-y-1">
                             <div class="text-xs text-slate-400">Total: <b class="text-white">${group.totalStock} u.</b></div>
                             <div>${headerBadge}</div>
                         </div>
                     </div>
-                    <div id="acc-${CSS.escape(name)}" class="${isOpen ? '' : 'hidden'} p-4.5 bg-slate-900/60 border-t border-slate-700/60 space-y-3">
+                    <div id="acc-${CSS.escape(name)}" class="${isOpen ? '' : 'hidden'} p-4 bg-slate-900/60 border-t border-slate-700/60 space-y-3">
                         ${lotsHtml}
                     </div>`;
                 container.appendChild(card);
@@ -1344,11 +1217,6 @@
             if (dbRef) {
                 dbRef.child(id).update({ stock: newStock });
                 const modeUsed = customMode || (amount > 0 ? 'add' : 'deduct');
-                
-                if (amount > 0) {
-                    deductFromActiveOrders(item.name, amount);
-                }
-
                 const actionText = amount > 0 ? `+${amount} u. en ${item.name} (Lote: ${item.batch})` : `${amount} u. en ${item.name} (Lote: ${item.batch})`;
                 showToast(actionText, modeUsed);
             }
@@ -1358,73 +1226,9 @@
             if (confirm('¿Eliminar este lote?') && dbRef) dbRef.child(id).remove();
         }
 
-        // --- PARSER DE DATAMATRIX GS1 INDUSTRIAL ---
-        function parseSmartQR(rawData) {
-            if (!rawData) return { code: '', batch: '', expiry: '' };
-            let code = '', batch = '', expiry = '';
-            let clean = rawData.trim().replace(/[\x1d\u001d\u0000-\u001f]/g, '|');
-
-            if (clean.includes('(')) {
-                const matches = [...clean.matchAll(/\((\d+)\)([^\(\)]+)/g)];
-                for (const match of matches) {
-                    const ai = match[1], val = match[2].trim();
-                    if (ai === '01') code = val;
-                    else if (ai === '17') {
-                        let yy = '20' + val.substring(0, 2), mm = val.substring(2, 4), dd = val.substring(4, 6);
-                        if (dd === '00' || dd > '31') dd = '01';
-                        expiry = `${yy}-${mm}-${dd}`;
-                    } else if (ai === '10') batch = val.split(' ')[0];
-                }
-            }
-
-            if (!code || !batch || !expiry) {
-                let raw = clean.replace(/[()\\]/g, ''), i = 0;
-                while (i < raw.length) {
-                    if (raw.startsWith('01', i) && i + 16 <= raw.length) {
-                        code = raw.substring(i + 2, i + 16); i += 16;
-                    } else if (raw.startsWith('17', i) && i + 8 <= raw.length) {
-                        let dateStr = raw.substring(i + 2, i + 8);
-                        if (/^\d{6}$/.test(dateStr)) {
-                            let yy = '20' + dateStr.substring(0, 2), mm = dateStr.substring(2, 4), dd = dateStr.substring(4, 6);
-                            if (dd === '00' || dd > '31') dd = '01';
-                            expiry = `${yy}-${mm}-${dd}`;
-                        }
-                        i += 8;
-                    } else if (raw.startsWith('10', i)) {
-                        i += 2; let sub = raw.substring(i), endIdx = raw.length;
-                        let sepIdx = sub.indexOf('|');
-                        if (sepIdx !== -1) endIdx = i + sepIdx;
-                        batch = raw.substring(i, endIdx).trim(); i = endIdx;
-                        if (raw[i] === '|') i++;
-                    } else i++;
-                }
-            }
-            return { code: code.trim(), batch: batch.trim(), expiry: expiry.trim() };
-        }
-
+        // --- FUNCIONES DE ENTRADA MANUAL Y MODALES ---
         function openManualInputModal() {
-            document.getElementById('manualScanInput').value = '';
-            document.getElementById('manualInputModal').classList.remove('hidden');
-            document.getElementById('manualInputModal').classList.add('flex');
-            setTimeout(() => document.getElementById('manualScanInput').focus(), 100);
-        }
-
-        function closeManualInputModal() {
-            document.getElementById('manualInputModal').classList.add('hidden');
-            document.getElementById('manualInputModal').classList.remove('flex');
-        }
-
-        function handleManualScanKeyModal(event) {
-            if (event.key === 'Enter') {
-                processModalManualInput();
-            }
-        }
-
-        function processModalManualInput() {
-            const val = document.getElementById('manualScanInput').value.trim();
-            if (!val) return;
-            closeManualInputModal();
-            processScannedCode(val);
+            openNewItemModal();
         }
 
         function processScannedCode(rawData) {
@@ -1432,10 +1236,18 @@
             const parsed = parseSmartQR(cleanRaw);
             activeScanParsed = parsed;
 
+            const card = document.getElementById('scanResultCard');
+            const content = document.getElementById('scanResultContent');
+            card.classList.remove('hidden');
+            content.innerText = cleanRaw;
+
             const item = inventoryArray.find(i => i.code === parsed.code || (parsed.batch && i.batch === parsed.batch));
             activeScanItem = item || null;
 
-            if (!item) { openNewItemModal(parsed); return; }
+            if (!item) {
+                openNewItemModal(parsed);
+                return;
+            }
 
             const modal = document.getElementById('scanActionModal');
             const title = document.getElementById('scanModalTitle');
@@ -1449,17 +1261,18 @@
                 title.innerText = "Consulta de Ítem";
                 qtyContainer.classList.add('hidden');
                 confirmBtn.classList.add('hidden');
-                body.innerHTML = `<div class="text-sky-400 font-bold text-sm mb-1">📦 ${item.name}</div><div><b>Stock actual:</b> ${item.stock} u. | <b>Lote:</b> ${item.batch}</div>`;
+                body.innerHTML = `<div class="text-sky-400 font-bold text-xs mb-1">📦 ${item.name}</div><div><b>Stock actual:</b> ${item.stock} u. | <b>Lote:</b> ${item.batch}</div>`;
             } else {
                 const actionVerb = scanMode === 'add' ? 'agregar' : 'descontar';
                 title.innerText = scanMode === 'add' ? '➕ Sumar Stock' : '⚡ Descontar Stock';
                 qtyContainer.classList.remove('hidden');
                 confirmBtn.classList.remove('hidden');
                 qtyLabel.innerText = `Cantidad a ${actionVerb}:`;
-                body.innerHTML = `<div class="text-white font-bold text-sm mb-1">📦 ${item.name}</div><div><b>Stock actual:</b> ${item.stock} u. | <b>Lote:</b> ${item.batch}</div>`;
+                body.innerHTML = `<div class="text-white font-bold text-xs mb-1">📦 ${item.name}</div><div><b>Stock actual:</b> ${item.stock} u. | <b>Lote:</b> ${item.batch}</div>`;
             }
             modal.classList.remove('hidden');
             modal.classList.add('flex');
+            document.getElementById('scanModalQty').focus();
         }
 
         function closeScanActionModal() {
@@ -1508,6 +1321,7 @@
             }
             document.getElementById('itemModal').classList.remove('hidden');
             document.getElementById('itemModal').classList.add('flex');
+            document.getElementById('itemName').focus();
         }
 
         function openEditItemModal(id) {
@@ -1534,26 +1348,19 @@
         function saveItem(event) {
             event.preventDefault();
             const key = document.getElementById('editKey').value;
-            const name = document.getElementById('itemName').value;
-            const stock = parseInt(document.getElementById('itemStock').value);
-
             const newItem = {
                 code: document.getElementById('itemCode').value,
-                name: name,
+                name: document.getElementById('itemName').value,
                 type: document.getElementById('itemType').value,
                 section: document.getElementById('itemSection').value,
-                stock: stock,
+                stock: parseInt(document.getElementById('itemStock').value),
                 batch: document.getElementById('itemBatch').value,
                 expiry: document.getElementById('itemExpiry').value
             };
 
             if (dbRef) {
-                if (key === "") {
-                    dbRef.push(newItem);
-                    deductFromActiveOrders(name, stock);
-                } else {
-                    dbRef.child(key).set(newItem);
-                }
+                if (key === "") dbRef.push(newItem);
+                else dbRef.child(key).set(newItem);
             }
             closeNewItemModal();
         }
