@@ -57,10 +57,10 @@
         }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen pb-24 md:pb-8 font-sans antialiased selection:bg-lab-500 selection:text-white" onclick="closeAllDropdownsOutside(event)">
+<body class="bg-slate-900 text-slate-100 min-h-screen pb-24 md:pb-12 font-sans antialiased selection:bg-lab-500 selection:text-white" onclick="closeAllDropdownsOutside(event)">
 
     <!-- NOTIFICACIÓN FLOTANTE (TOAST) PERFECTAMENTE CENTRADA -->
-    <div id="toastNotification" class="fixed top-16 inset-x-4 mx-auto z-[100] hidden items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border backdrop-blur-md max-w-sm text-sm toast-animate">
+    <div id="toastNotification" class="fixed top-20 inset-x-4 mx-auto z-[100] hidden items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border backdrop-blur-md max-w-sm text-sm toast-animate">
         <div id="toastIconContainer" class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-white"></div>
         <div class="min-w-0">
             <h4 id="toastTitle" class="font-bold text-white text-xs uppercase tracking-wider">Acción completada</h4>
@@ -70,8 +70,8 @@
 
     <!-- PANTALLA DE BLOQUEO (VALIDA CONTRA FIREBASE) -->
     <div id="authScreen" class="fixed inset-0 bg-slate-950 z-[100] flex items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-700 rounded-2xl p-6 max-w-sm w-full text-center space-y-4 shadow-2xl">
-            <div class="w-14 h-14 bg-lab-500/10 text-lab-500 rounded-2xl mx-auto flex items-center justify-center text-2xl border border-lab-500/20">
+        <div class="bg-slate-900 border border-slate-700/80 rounded-2xl p-8 max-w-sm w-full text-center space-y-5 shadow-2xl">
+            <div class="w-14 h-14 bg-lab-500/10 text-lab-500 rounded-2xl mx-auto flex items-center justify-center text-2xl border border-lab-500/20 shadow-inner">
                 <i class="fa-solid fa-shield-halved"></i>
             </div>
             <div class="space-y-1">
@@ -80,7 +80,7 @@
             </div>
             <div class="space-y-2 text-left">
                 <label class="block text-xs font-medium text-slate-400">Clave de acceso</label>
-                <input type="password" id="accessKeyInput" onkeypress="if(event.key==='Enter') verifyKeyWithFirebase()" placeholder="Contraseña..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 h-11 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                <input type="password" id="accessKeyInput" onkeypress="if(event.key==='Enter') verifyKeyWithFirebase()" placeholder="Contraseña..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3.5 h-11 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
             </div>
             <button onclick="verifyKeyWithFirebase()" class="w-full bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-xl text-sm font-semibold shadow transition">
                 Desbloquear
@@ -88,30 +88,32 @@
         </div>
     </div>
 
-    <!-- HEADER / BARRA SUPERIOR -->
-    <header class="bg-slate-800/95 backdrop-blur-md border-b border-slate-700/85 sticky top-0 z-40 shadow-md">
-        <div class="max-w-5xl mx-auto px-4 py-2.5 flex items-center justify-between relative">
-            <div class="flex items-center space-x-2.5 min-w-0 shrink-0">
-                <div class="bg-slate-900 border border-slate-700 p-1.5 rounded-xl shadow-md flex items-center justify-center shrink-0 w-11 h-11">
-                    <img src="caja_png_transparente.png" alt="Logo" class="w-8 h-8 object-contain">
+    <!-- HEADER / BARRA SUPERIOR OPTIMIZADA PARA PC Y MÓVIL -->
+    <header class="bg-slate-800/95 backdrop-blur-md border-b border-slate-700/80 sticky top-0 z-40 shadow-md">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+            <!-- LOGO Y TÍTULO -->
+            <div class="flex items-center space-x-3 min-w-0 shrink-0">
+                <div class="bg-slate-900 border border-slate-700/80 p-1.5 rounded-xl shadow-inner flex items-center justify-center shrink-0 w-10 h-10">
+                    <img src="caja_png_transparente.png" alt="Logo" class="w-7 h-7 object-contain">
                 </div>
                 <div class="min-w-0">
-                    <h1 class="text-sm sm:text-lg font-bold tracking-tight text-white truncate leading-tight">LudovicApp</h1>
-                    <p class="text-[11px] sm:text-xs text-slate-400 truncate">Control de stock</p>
+                    <h1 class="text-base font-bold tracking-tight text-white truncate leading-tight">LudovicApp</h1>
+                    <p class="text-[11px] text-slate-400 truncate">Control de stock</p>
                 </div>
             </div>
 
-            <nav class="hidden md:flex items-center justify-center space-x-1 bg-slate-900/60 p-1 rounded-xl border border-slate-700 absolute left-1/2 -translate-x-1/2">
-                <button onclick="switchTab('inventory')" id="pc-btn-inventory" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-lab-400 bg-slate-800 shadow transition flex items-center gap-1.5">
+            <!-- NAVEGACIÓN DESKTOP CENTRADA -->
+            <nav class="hidden md:flex items-center space-x-1 bg-slate-900/80 p-1 rounded-xl border border-slate-700/80 shadow-inner">
+                <button onclick="switchTab('inventory')" id="pc-btn-inventory" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-lab-400 bg-slate-800 shadow transition flex items-center gap-1.5">
                     <i class="fa-solid fa-boxes-stacked"></i> Inventario
                 </button>
-                <button onclick="switchTab('scan')" id="pc-btn-scan" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                <button onclick="switchTab('scan')" id="pc-btn-scan" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
                     <i class="fa-solid fa-barcode"></i> Escáner
                 </button>
-                <button onclick="switchTab('orders')" id="pc-btn-orders" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                <button onclick="switchTab('orders')" id="pc-btn-orders" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
                     <i class="fa-solid fa-file-invoice-dollar"></i> Órdenes
                 </button>
-                <button onclick="switchTab('labels')" id="pc-btn-labels" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                <button onclick="switchTab('labels')" id="pc-btn-labels" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
                     <i class="fa-solid fa-tags"></i> Etiquetas
                 </button>
                 <button onclick="switchTab('settings')" id="pc-btn-settings" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
@@ -119,42 +121,43 @@
                 </button>
             </nav>
 
-            <div class="flex items-center justify-end space-x-2 shrink-0">
-                <div id="cloudStatus" class="flex items-center space-x-1.5 text-xs bg-slate-900/80 border border-slate-700/80 px-3 py-1 rounded-full text-slate-300">
+            <!-- ESTADO DE NUBE -->
+            <div class="flex items-center justify-end shrink-0">
+                <div id="cloudStatus" class="flex items-center space-x-2 text-xs bg-slate-900/80 border border-slate-700/80 px-3 py-1.5 rounded-full text-slate-300 shadow-inner">
                     <span id="statusIndicator" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
-                    <span id="statusText">Conectando...</span>
+                    <span id="statusText" class="font-medium">Conectando...</span>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- CONTENEDOR PRINCIPAL -->
-    <main class="max-w-5xl mx-auto p-4 md:p-6 space-y-4">
+    <!-- CONTENEDOR PRINCIPAL AMPLIO Y ORDENADO -->
+    <main class="max-w-4xl mx-auto p-4 md:p-6 space-y-5">
         <!-- 1. PESTAÑA INVENTARIO -->
-        <section id="tab-inventory" class="tab-content space-y-3.5">
+        <section id="tab-inventory" class="tab-content space-y-4">
             <div class="grid grid-cols-3 gap-3">
-                <div onclick="setKpiFilter('all')" id="kpiCardAll" class="bg-slate-800/90 border-2 border-slate-700/70 rounded-xl p-3 text-center shadow-sm cursor-pointer hover:border-lab-500 transition">
+                <div onclick="setKpiFilter('all')" id="kpiCardAll" class="bg-slate-800/90 border-2 border-slate-700/70 rounded-xl p-3.5 text-center shadow-sm cursor-pointer hover:border-lab-500 transition">
                     <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Lotes</p>
-                    <h4 id="kpiTotal" class="text-xl font-extrabold text-white mt-1">0</h4>
+                    <h4 id="kpiTotal" class="text-2xl font-extrabold text-white mt-1">0</h4>
                 </div>
-                <div onclick="setKpiFilter('expiring')" id="kpiCardExpiring" class="bg-slate-800/90 border-2 border-slate-700/70 rounded-xl p-3 text-center shadow-sm cursor-pointer hover:border-amber-500 transition">
+                <div onclick="setKpiFilter('expiring')" id="kpiCardExpiring" class="bg-slate-800/90 border-2 border-slate-700/70 rounded-xl p-3.5 text-center shadow-sm cursor-pointer hover:border-amber-500 transition">
                     <p class="text-xs font-bold text-amber-400/90 uppercase tracking-wider">&lt; 30d Vto</p>
-                    <h4 id="kpiExpiring" class="text-xl font-extrabold text-amber-400 mt-1">0</h4>
+                    <h4 id="kpiExpiring" class="text-2xl font-extrabold text-amber-400 mt-1">0</h4>
                 </div>
-                <div onclick="setKpiFilter('critical')" id="kpiCardCritical" class="bg-slate-800/90 border-2 border-slate-700/70 rounded-xl p-3 text-center shadow-sm cursor-pointer hover:border-rose-500 transition">
+                <div onclick="setKpiFilter('critical')" id="kpiCardCritical" class="bg-slate-800/90 border-2 border-slate-700/70 rounded-xl p-3.5 text-center shadow-sm cursor-pointer hover:border-rose-500 transition">
                     <p class="text-xs font-bold text-rose-400/90 uppercase tracking-wider">Crítico</p>
-                    <h4 id="kpiCritical" class="text-xl font-extrabold text-rose-400 mt-1">0</h4>
+                    <h4 id="kpiCritical" class="text-2xl font-extrabold text-rose-400 mt-1">0</h4>
                 </div>
             </div>
 
-            <div class="bg-slate-800 p-3.5 rounded-xl border border-slate-700 shadow-sm space-y-3">
-                <div class="flex gap-2">
+            <div class="bg-slate-800 p-4 rounded-xl border border-slate-700/80 shadow-md space-y-3">
+                <div class="flex gap-2.5">
                     <div class="relative flex-1">
                         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
                         <input type="text" id="searchInput" oninput="filterInventory()" placeholder="Buscar reactivo, código o lote..." class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-10 pr-3 h-10 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-lab-500">
                     </div>
-                    <button onclick="openNewItemModal()" class="bg-lab-600 hover:bg-lab-700 text-white px-3.5 h-10 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow shrink-0">
-                        <i class="fa-solid fa-plus"></i> Nuevo
+                    <button onclick="openNewItemModal()" class="bg-lab-600 hover:bg-lab-700 text-white px-4 h-10 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow shrink-0 transition">
+                        <i class="fa-solid fa-plus"></i> Nuevo Lote
                     </button>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
@@ -176,29 +179,29 @@
                 </div>
             </div>
 
-            <div id="inventoryGroupedContainer" class="space-y-2.5"></div>
+            <div id="inventoryGroupedContainer" class="space-y-3"></div>
 
-            <div id="emptyInventory" class="hidden p-8 text-center text-slate-400">
-                <i class="fa-solid fa-box-open text-4xl mb-2 text-slate-600"></i>
-                <p class="text-base font-medium">No se encontraron ítems con estos filtros</p>
+            <div id="emptyInventory" class="hidden p-12 text-center text-slate-400 bg-slate-800/40 rounded-xl border border-slate-700/50">
+                <i class="fa-solid fa-box-open text-4xl mb-3 text-slate-600"></i>
+                <p class="text-sm font-medium">No se encontraron ítems con estos filtros</p>
             </div>
         </section>
 
         <!-- 2. PESTAÑA ESCÁNER -->
         <section id="tab-scan" class="tab-content hidden space-y-4">
-            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg max-w-xl mx-auto space-y-4">
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700/85 shadow-lg max-w-lg mx-auto space-y-5">
                 <div class="flex flex-col gap-3">
                     <h2 class="text-base font-bold flex items-center gap-2">
                         <i class="fa-solid fa-barcode text-lab-500"></i> Escáner DataMatrix Industrial
                     </h2>
                     <div class="grid grid-cols-3 bg-slate-900 rounded-lg p-1 border border-slate-700 text-xs gap-1">
-                        <button onclick="setScanMode('deduct')" id="modeBtnDeduct" class="py-2 rounded-md bg-lab-600 text-white font-medium transition text-xs text-center truncate">⚡ Descontar</button>
-                        <button onclick="setScanMode('add')" id="modeBtnAdd" class="py-2 rounded-md text-slate-400 font-medium transition text-xs text-center truncate">➕ Agregar</button>
-                        <button onclick="setScanMode('consult')" id="modeBtnConsult" class="py-2 rounded-md text-slate-400 font-medium transition text-xs text-center truncate">🔍 Consultar</button>
+                        <button onclick="setScanMode('deduct')" id="modeBtnDeduct" class="py-2.5 rounded-md bg-lab-600 text-white font-semibold transition text-xs text-center truncate">⚡ Descontar</button>
+                        <button onclick="setScanMode('add')" id="modeBtnAdd" class="py-2.5 rounded-md text-slate-400 font-semibold transition text-xs text-center truncate">➕ Agregar</button>
+                        <button onclick="setScanMode('consult')" id="modeBtnConsult" class="py-2.5 rounded-md text-slate-400 font-semibold transition text-xs text-center truncate">🔍 Consultar</button>
                     </div>
                 </div>
 
-                <div class="relative bg-black rounded-xl overflow-hidden aspect-square max-w-[280px] mx-auto border border-slate-700 flex items-center justify-center">
+                <div class="relative bg-black rounded-xl overflow-hidden aspect-square max-w-[280px] mx-auto border border-slate-700 flex items-center justify-center shadow-inner">
                     <video id="video-element" autoplay playsinline muted class="w-full h-full object-cover hidden"></video>
                     <div id="video-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-slate-500 bg-slate-900 gap-2">
                         <i class="fa-solid fa-video-slash text-3xl mb-1"></i>
@@ -215,32 +218,32 @@
                     </div>
                 </div>
 
-                <div class="flex flex-col gap-2.5">
+                <div class="flex flex-col gap-3">
                     <div class="flex gap-2">
-                        <button id="btn-toggle-camera" onclick="appScanner.toggleScanner()" class="flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 shadow transition">
+                        <button id="btn-toggle-camera" onclick="appScanner.toggleScanner()" class="flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow transition">
                             <i class="fa-solid fa-camera"></i> <span id="btn-toggle-text">Activar Cámara</span>
                         </button>
-                        <button id="btn-switch-camera" onclick="appScanner.switchCamera()" disabled class="bg-slate-700 hover:bg-slate-600 disabled:opacity-40 text-slate-200 px-4 h-11 rounded-lg text-sm font-semibold flex items-center justify-center shadow transition" title="Cambiar cámara">
+                        <button id="btn-switch-camera" onclick="appScanner.switchCamera()" disabled class="bg-slate-700 hover:bg-slate-600 disabled:opacity-40 text-slate-200 px-4 h-11 rounded-xl text-sm font-semibold flex items-center justify-center shadow transition" title="Cambiar cámara">
                             <i class="fa-solid fa-rotate"></i>
                         </button>
-                        <button id="btn-toggle-torch" onclick="appScanner.toggleTorch()" disabled class="bg-slate-700 hover:bg-slate-600 disabled:opacity-40 text-slate-200 px-4 h-11 rounded-lg text-sm font-semibold flex items-center justify-center shadow transition" title="Linterna">
+                        <button id="btn-toggle-torch" onclick="appScanner.toggleTorch()" disabled class="bg-slate-700 hover:bg-slate-600 disabled:opacity-40 text-slate-200 px-4 h-11 rounded-xl text-sm font-semibold flex items-center justify-center shadow transition" title="Linterna">
                             <i class="fa-solid fa-bolt"></i>
                         </button>
                     </div>
-                    <select id="select-camera" onchange="appScanner.onCameraSelectChanged(event)" class="w-full bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-lg px-3 h-10 focus:outline-none focus:border-lab-500">
+                    <select id="select-camera" onchange="appScanner.onCameraSelectChanged(event)" class="w-full bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-xl px-3 h-10 focus:outline-none focus:border-lab-500">
                         <option value="">Buscando cámaras...</option>
                     </select>
                 </div>
 
-                <div class="pt-3 border-t border-slate-700 space-y-1.5">
+                <div class="pt-3 border-t border-slate-700/80 space-y-2">
                     <label class="block text-xs font-medium text-slate-400">Entrada manual / Pistola USB</label>
                     <div class="flex gap-2">
-                        <input type="text" id="manualScanInput" onkeypress="handleManualScanKey(event)" placeholder="Escribí código o lote..." class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
-                        <button onclick="processScannedCode(document.getElementById('manualScanInput').value); document.getElementById('manualScanInput').value='';" class="bg-slate-700 hover:bg-slate-600 text-white px-4 h-10 rounded-lg text-xs font-semibold shrink-0">Procesar</button>
+                        <input type="text" id="manualScanInput" onkeypress="handleManualScanKey(event)" placeholder="Escribí código o lote..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
+                        <button onclick="processScannedCode(document.getElementById('manualScanInput').value); document.getElementById('manualScanInput').value='';" class="bg-slate-700 hover:bg-slate-600 text-white px-4 h-10 rounded-xl text-xs font-semibold shrink-0 transition">Procesar</button>
                     </div>
                 </div>
 
-                <div id="scanResultCard" class="hidden p-3 bg-slate-900 rounded-lg border border-slate-700 space-y-1">
+                <div id="scanResultCard" class="hidden p-3.5 bg-slate-900 rounded-xl border border-slate-700 space-y-1">
                     <p class="text-xs text-slate-400">Último escaneo procesado:</p>
                     <div id="scanResultContent" class="text-sm font-medium text-slate-200 mono"></div>
                 </div>
@@ -249,41 +252,45 @@
 
         <!-- 3. PESTAÑA ÓRDENES DE COMPRA -->
         <section id="tab-orders" class="tab-content hidden space-y-4">
-            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg max-w-xl mx-auto space-y-4">
-                <div class="flex justify-between items-center">
-                    <h2 class="text-base font-bold flex items-center gap-2">
-                        <i class="fa-solid fa-file-invoice-dollar text-lab-500"></i> Órdenes de Compra
-                    </h2>
-                    <button onclick="openNewOrderModal()" class="bg-lab-600 hover:bg-lab-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow">
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700/85 shadow-lg space-y-5">
+                <div class="flex justify-between items-center pb-2 border-b border-slate-700/60">
+                    <div>
+                        <h2 class="text-base font-bold flex items-center gap-2 text-white">
+                            <i class="fa-solid fa-file-invoice-dollar text-lab-500"></i> Órdenes de Compra
+                        </h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Gestión y recepción de pedidos de proveedores</p>
+                    </div>
+                    <button onclick="openNewOrderModal()" class="bg-lab-600 hover:bg-lab-700 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 shadow transition">
                         <i class="fa-solid fa-plus"></i> Nueva OC
                     </button>
                 </div>
 
-                <div id="ordersContainer" class="space-y-3"></div>
-                <div id="emptyOrders" class="hidden p-6 text-center text-slate-400 text-xs">
-                    No hay órdenes de compra registradas.
+                <div id="ordersContainer" class="space-y-3.5"></div>
+                <div id="emptyOrders" class="hidden p-12 text-center text-slate-400 bg-slate-900/50 rounded-xl border border-slate-700/50">
+                    <i class="fa-solid fa-receipt text-4xl mb-2 text-slate-600"></i>
+                    <p class="text-sm font-medium">No hay órdenes de compra registradas.</p>
                 </div>
             </div>
         </section>
 
         <!-- 4. PESTAÑA ETIQUETAS -->
         <section id="tab-labels" class="tab-content hidden space-y-4">
-            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg max-w-xl mx-auto space-y-4">
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700/85 shadow-lg max-w-lg mx-auto space-y-5">
                 <h2 class="text-base font-bold flex items-center gap-2">
                     <i class="fa-solid fa-print text-lab-500"></i> Generador de Etiquetas
                 </h2>
-                <div class="space-y-1">
+                <div class="space-y-1.5">
                     <label class="block text-xs font-medium text-slate-400">Seleccionar Reactivo</label>
-                    <select id="labelItemSelect" onchange="generateBarcodePreview()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-200 focus:outline-none focus:border-lab-500">
+                    <select id="labelItemSelect" onchange="generateBarcodePreview()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-200 focus:outline-none focus:border-lab-500">
                     </select>
                 </div>
-                <div id="labelPreviewContainer" class="bg-white text-slate-900 p-4 rounded-lg flex flex-col items-center justify-center border border-slate-300 shadow-inner">
+                <div id="labelPreviewContainer" class="bg-white text-slate-900 p-5 rounded-xl flex flex-col items-center justify-center border border-slate-300 shadow-inner">
                     <p class="text-xs font-bold text-slate-600 uppercase tracking-widest mb-1">LABORATORIO CLÍNICO</p>
                     <h3 id="lblItemName" class="text-base font-extrabold text-center">Nombre del Reactivo</h3>
-                    <p id="lblItemDetails" class="text-xs text-slate-600 mb-2">Lote: L-001 | Vto: 2027-12-31</p>
+                    <p id="lblItemDetails" class="text-xs text-slate-600 mb-3">Lote: L-001 | Vto: 2027-12-31</p>
                     <svg id="barcodeSvg" class="max-w-full h-14"></svg>
                 </div>
-                <button onclick="window.print()" class="w-full bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 shadow">
+                <button onclick="window.print()" class="w-full bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow transition">
                     <i class="fa-solid fa-print"></i> Imprimir Etiqueta
                 </button>
             </div>
@@ -291,20 +298,20 @@
 
         <!-- 5. PESTAÑA AJUSTES -->
         <section id="tab-settings" class="tab-content hidden space-y-4">
-            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg max-w-xl mx-auto space-y-3.5">
+            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700/85 shadow-lg max-w-lg mx-auto space-y-4">
                 <h2 class="text-base font-bold flex items-center gap-2 text-white">
                     <i class="fa-solid fa-gear text-lab-500"></i> Catálogo Maestro de Nombres
                 </h2>
                 <p class="text-xs text-slate-400">Agregá los nombres oficiales para mantener la homogeneidad.</p>
                 
                 <div class="flex gap-2">
-                    <input type="text" id="newCatalogName" placeholder="Ej: Architect rHTLV-I/II" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
-                    <button onclick="addCatalogName()" class="bg-lab-600 hover:bg-lab-700 text-white px-4 h-10 rounded-lg text-xs font-semibold shadow flex items-center gap-1 shrink-0">
+                    <input type="text" id="newCatalogName" placeholder="Ej: Architect rHTLV-I/II" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                    <button onclick="addCatalogName()" class="bg-lab-600 hover:bg-lab-700 text-white px-4 h-10 rounded-xl text-xs font-semibold shadow flex items-center gap-1 shrink-0 transition">
                         <i class="fa-solid fa-plus"></i> Agregar
                     </button>
                 </div>
 
-                <div class="border border-slate-700 rounded-lg overflow-hidden bg-slate-900 max-h-64 overflow-y-auto">
+                <div class="border border-slate-700 rounded-xl overflow-hidden bg-slate-900 max-h-64 overflow-y-auto">
                     <ul id="catalogList" class="divide-y divide-slate-800 text-sm"></ul>
                 </div>
             </div>
@@ -337,7 +344,7 @@
 
     <!-- MODAL NUEVA ORDEN DE COMPRA (CREAR CABECERA) -->
     <div id="orderModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-50 p-3">
-        <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 max-w-sm w-full shadow-2xl space-y-3.5">
+        <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-5 max-w-sm w-full shadow-2xl space-y-4">
             <div class="flex justify-between items-center">
                 <h3 class="text-base font-bold text-white">Nueva Orden de Compra</h3>
                 <button onclick="closeNewOrderModal()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -346,20 +353,20 @@
             <div class="space-y-3">
                 <div class="space-y-1">
                     <label class="block text-xs font-medium text-slate-400">N° de Orden / OC</label>
-                    <input type="text" id="orderNumber" placeholder="OC-2026-089" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
+                    <input type="text" id="orderNumber" placeholder="OC-2026-089" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
                 </div>
                 <div class="space-y-1">
                     <label class="block text-xs font-medium text-slate-400">Proveedor</label>
-                    <input type="text" id="orderProvider" placeholder="Abbott / Roche..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                    <input type="text" id="orderProvider" placeholder="Abbott / Roche..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
                 </div>
                 <div class="space-y-1">
                     <label class="block text-xs font-medium text-slate-400">Vencimiento estimado</label>
-                    <input type="date" id="orderExpiry" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                    <input type="date" id="orderExpiry" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
                 </div>
 
                 <div class="flex gap-2 pt-2">
-                    <button type="button" onclick="closeNewOrderModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-lg text-sm font-semibold">Cancelar</button>
-                    <button type="button" onclick="saveNewOrderHeader()" class="flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-lg text-sm font-semibold shadow">Crear OC</button>
+                    <button type="button" onclick="closeNewOrderModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-xl text-sm font-semibold transition">Cancelar</button>
+                    <button type="button" onclick="saveNewOrderHeader()" class="flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-xl text-sm font-semibold shadow transition">Crear OC</button>
                 </div>
             </div>
         </div>
@@ -367,19 +374,19 @@
 
     <!-- VENTANA MODAL: CONFIRMAR MOVIMIENTO -->
     <div id="scanActionModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-50 p-3">
-        <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 max-w-md w-full shadow-2xl space-y-4">
+        <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-5 max-w-md w-full shadow-2xl space-y-4">
             <div class="flex justify-between items-center">
                 <h3 id="scanModalTitle" class="text-base font-bold text-white">Confirmar Movimiento</h3>
                 <button onclick="closeScanActionModal()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
-            <div id="scanModalBody" class="space-y-1.5 text-xs text-slate-300 bg-slate-900 p-3 rounded-lg border border-slate-700"></div>
+            <div id="scanModalBody" class="space-y-1.5 text-xs text-slate-300 bg-slate-900 p-3.5 rounded-xl border border-slate-700"></div>
             <div id="qtyContainer" class="space-y-1">
                 <label id="qtyLabel" class="block text-xs font-medium text-slate-400">Cantidad a agregar</label>
-                <input type="number" id="scanModalQty" min="1" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-11 text-lg font-bold text-center text-slate-100 focus:outline-none focus:border-lab-500">
+                <input type="number" id="scanModalQty" min="1" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-11 text-lg font-bold text-center text-slate-100 focus:outline-none focus:border-lab-500">
             </div>
             <div class="flex gap-2 pt-1">
-                <button type="button" onclick="closeScanActionModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-lg text-sm font-semibold">Cancelar</button>
-                <button type="button" onclick="executeScanAction()" id="scanModalConfirmBtn" class="flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-lg text-sm font-semibold shadow flex items-center justify-center gap-1.5">
+                <button type="button" onclick="closeScanActionModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-xl text-sm font-semibold transition">Cancelar</button>
+                <button type="button" onclick="executeScanAction()" id="scanModalConfirmBtn" class="flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-xl text-sm font-semibold shadow flex items-center justify-center gap-1.5 transition">
                     <i class="fa-solid fa-check"></i> OK - Confirmar
                 </button>
             </div>
@@ -388,18 +395,18 @@
 
     <!-- MODAL NUEVO / EDITAR ÍTEM -->
     <div id="itemModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-50 p-3">
-        <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 max-w-md w-full shadow-2xl space-y-3.5 max-h-[90vh] overflow-y-auto">
+        <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-5 max-w-md w-full shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center">
                 <h3 id="modalTitle" class="text-base font-bold text-white">Nuevo Reactivo o Insumo</h3>
                 <button onclick="closeNewItemModal()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
-            <form id="itemForm" onsubmit="saveItem(event)" class="space-y-3">
+            <form id="itemForm" onsubmit="saveItem(event)" class="space-y-3.5">
                 <input type="hidden" id="editKey" value="">
                 <div class="space-y-1">
                     <label class="block text-xs font-medium text-slate-400">Código / GTIN</label>
                     <div class="flex items-center gap-2">
-                        <input type="text" id="itemCode" required class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
-                        <button type="button" onclick="openNewItemModal()" class="bg-slate-700 hover:bg-slate-600 text-white px-3.5 h-10 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 shadow shrink-0" title="Generar aleatorio">
+                        <input type="text" id="itemCode" required class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
+                        <button type="button" onclick="openNewItemModal()" class="bg-slate-700 hover:bg-slate-600 text-white px-3.5 h-10 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shadow shrink-0 transition" title="Generar aleatorio">
                             <i class="fa-solid fa-wand-magic-sparkles"></i>
                         </button>
                     </div>
@@ -408,16 +415,16 @@
                 <div class="relative space-y-1" id="nameComboboxContainer">
                     <label class="block text-xs font-medium text-slate-400">Nombre del Reactivo</label>
                     <div class="relative">
-                        <input type="text" id="itemName" required autocomplete="off" oninput="handleNameSearchInput(event)" onfocus="handleNameSearchInput(event)" placeholder="Escribí para buscar..." class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-3 pr-8 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                        <input type="text" id="itemName" required autocomplete="off" oninput="handleNameSearchInput(event)" onfocus="handleNameSearchInput(event)" placeholder="Escribí para buscar..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-3.5 pr-8 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
                         <i class="fa-solid fa-chevron-down absolute right-3.5 top-3.5 text-xs text-slate-500 pointer-events-none"></i>
                     </div>
-                    <div id="nameSuggestionsDropdown" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-900 border border-slate-700 rounded-lg shadow-2xl max-h-40 overflow-y-auto z-50 divide-y divide-slate-800"></div>
+                    <div id="nameSuggestionsDropdown" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-h-40 overflow-y-auto z-50 divide-y divide-slate-800"></div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2">
+                <div class="grid grid-cols-2 gap-2.5">
                     <div class="space-y-1">
                         <label class="block text-xs font-medium text-slate-400">Tipo</label>
-                        <select id="itemType" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 h-10 text-sm text-slate-200 focus:outline-none focus:border-lab-500">
+                        <select id="itemType" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 h-10 text-sm text-slate-200 focus:outline-none focus:border-lab-500">
                             <option value="Reactivo">Reactivo</option>
                             <option value="Calibrador">Calibrador</option>
                             <option value="Control">Control</option>
@@ -426,7 +433,7 @@
                     </div>
                     <div class="space-y-1">
                         <label class="block text-xs font-medium text-slate-400">Sección</label>
-                        <select id="itemSection" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 h-10 text-sm text-slate-200 focus:outline-none focus:border-lab-500">
+                        <select id="itemSection" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 h-10 text-sm text-slate-200 focus:outline-none focus:border-lab-500">
                             <option value="Química">Química Clínica</option>
                             <option value="Hematología">Hematología</option>
                             <option value="Inmunología">Inmunología</option>
@@ -436,25 +443,25 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-2">
+                <div class="grid grid-cols-2 gap-2.5">
                     <div class="space-y-1">
                         <label class="block text-xs font-medium text-slate-400">N° de Lote</label>
-                        <input type="text" id="itemBatch" required placeholder="L-9082" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
+                        <input type="text" id="itemBatch" required placeholder="L-9082" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
                     </div>
                     <div class="space-y-1">
                         <label class="block text-xs font-medium text-slate-400">Cantidad / Stock</label>
-                        <input type="number" id="itemStock" min="0" required value="1" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                        <input type="number" id="itemStock" min="0" required value="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
                     </div>
                 </div>
 
                 <div class="space-y-1">
                     <label class="block text-xs font-medium text-slate-400">Vencimiento</label>
-                    <input type="date" id="itemExpiry" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                    <input type="date" id="itemExpiry" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
                 </div>
 
                 <div class="flex gap-2 pt-2">
-                    <button type="button" onclick="closeNewItemModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-lg text-sm font-semibold">Cancelar</button>
-                    <button type="submit" class="flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-lg text-sm font-semibold shadow">Guardar en la Nube</button>
+                    <button type="button" onclick="closeNewItemModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-xl text-sm font-semibold transition">Cancelar</button>
+                    <button type="submit" class="flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-xl text-sm font-semibold shadow transition">Guardar en la Nube</button>
                 </div>
             </form>
         </div>
@@ -544,12 +551,12 @@
             msgEl.innerText = message;
             if (type === 'add') {
                 titleEl.innerText = "Stock Agregado";
-                toast.className = "fixed top-16 inset-x-4 mx-auto z-[100] flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border bg-emerald-950/95 border-emerald-600 backdrop-blur-md max-w-sm text-sm toast-animate";
+                toast.className = "fixed top-20 inset-x-4 mx-auto z-[100] flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border bg-emerald-950/95 border-emerald-600 backdrop-blur-md max-w-sm text-sm toast-animate";
                 iconContainer.className = "w-8 h-8 rounded-lg bg-emerald-600 flex items-center justify-center shrink-0 text-white font-bold";
                 iconContainer.innerHTML = '<i class="fa-solid fa-plus"></i>';
             } else {
                 titleEl.innerText = "Stock Descontado";
-                toast.className = "fixed top-16 inset-x-4 mx-auto z-[100] flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border bg-rose-950/95 border-rose-600 backdrop-blur-md max-w-sm text-sm toast-animate";
+                toast.className = "fixed top-20 inset-x-4 mx-auto z-[100] flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border bg-rose-950/95 border-rose-600 backdrop-blur-md max-w-sm text-sm toast-animate";
                 iconContainer.className = "w-8 h-8 rounded-lg bg-rose-600 flex items-center justify-center shrink-0 text-white font-bold";
                 iconContainer.innerHTML = '<i class="fa-solid fa-bolt"></i>';
             }
@@ -741,7 +748,7 @@
 
                     this.isScanning = true;
                     this.btnToggleText.innerText = "Detener Cámara";
-                    this.btnToggle.className = "flex-1 bg-rose-600 hover:bg-rose-700 text-white h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 shadow transition";
+                    this.btnToggle.className = "flex-1 bg-rose-600 hover:bg-rose-700 text-white h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow transition";
                     this.checkTorchAvailability();
                 } catch (err) {
                     console.error("Error al arrancar escáner:", err);
@@ -761,7 +768,7 @@
                 this.videoPlaceholder.classList.remove('hidden');
                 this.reticle.classList.add('hidden');
                 this.btnToggleText.innerText = "Activar Cámara";
-                this.btnToggle.className = "flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 shadow transition";
+                this.btnToggle.className = "flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow transition";
                 this.btnTorch.disabled = true;
             }
 
@@ -838,9 +845,9 @@
 
         function setKpiFilter(filterType) {
             activeKpiFilter = activeKpiFilter === filterType ? 'all' : filterType;
-            document.getElementById('kpiCardAll').className = `bg-slate-800/90 rounded-xl p-3 text-center shadow-sm cursor-pointer transition border-2 ${activeKpiFilter === 'all' ? 'border-lab-500 ring-1 ring-lab-500' : 'border-slate-700/70 hover:border-lab-500'}`;
-            document.getElementById('kpiCardExpiring').className = `bg-slate-800/90 rounded-xl p-3 text-center shadow-sm cursor-pointer transition border-2 ${activeKpiFilter === 'expiring' ? 'border-amber-500 ring-1 ring-amber-500' : 'border-slate-700/70 hover:border-amber-500'}`;
-            document.getElementById('kpiCardCritical').className = `bg-slate-800/90 rounded-xl p-3 text-center shadow-sm cursor-pointer transition border-2 ${activeKpiFilter === 'critical' ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-700/70 hover:border-rose-500'}`;
+            document.getElementById('kpiCardAll').className = `bg-slate-800/90 rounded-xl p-3.5 text-center shadow-sm cursor-pointer transition border-2 ${activeKpiFilter === 'all' ? 'border-lab-500 ring-1 ring-lab-500' : 'border-slate-700/70 hover:border-lab-500'}`;
+            document.getElementById('kpiCardExpiring').className = `bg-slate-800/90 rounded-xl p-3.5 text-center shadow-sm cursor-pointer transition border-2 ${activeKpiFilter === 'expiring' ? 'border-amber-500 ring-1 ring-amber-500' : 'border-slate-700/70 hover:border-amber-500'}`;
+            document.getElementById('kpiCardCritical').className = `bg-slate-800/90 rounded-xl p-3.5 text-center shadow-sm cursor-pointer transition border-2 ${activeKpiFilter === 'critical' ? 'border-rose-500 ring-1 ring-rose-500' : 'border-slate-700/70 hover:border-rose-500'}`;
             filterInventory();
         }
 
@@ -928,7 +935,7 @@
             }
         }
 
-        // --- GESTIÓN DE ÓRDENES DE COMPRA (CABECERA + DESPLEGABLE DE ÍTEMS) ---
+        // --- GESTIÓN DE ÓRDENES DE COMPRA ---
         function openNewOrderModal() {
             document.getElementById('orderNumber').value = '';
             document.getElementById('orderProvider').value = '';
@@ -1048,7 +1055,7 @@
             dropdown.innerHTML = '';
             matches.forEach(name => {
                 const div = document.createElement('div');
-                div.className = "px-3 py-2 text-xs text-slate-200 hover:bg-slate-800 hover:text-lab-400 cursor-pointer font-medium transition";
+                div.className = "px-3.5 py-2 text-xs text-slate-200 hover:bg-slate-800 hover:text-lab-400 cursor-pointer font-medium transition";
                 div.innerText = name;
                 div.onclick = () => {
                     input.value = name;
@@ -1074,8 +1081,8 @@
             ordersArray.forEach(order => {
                 const isReceived = order.status === 'Recibida';
                 const statusBadge = isReceived 
-                    ? '<span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">Recibida</span>'
-                    : '<span class="bg-amber-950 text-amber-400 border border-amber-800 text-[10px] font-bold px-2 py-0.5 rounded">Pendiente</span>';
+                    ? '<span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full">Recibida</span>'
+                    : '<span class="bg-amber-950 text-amber-400 border border-amber-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full">Pendiente</span>';
 
                 const isOpen = openOrderAccordions[order.id] || false;
                 const itemsCount = Array.isArray(order.items) ? order.items.length : 0;
@@ -1091,38 +1098,38 @@
                                 : '<i class="fa-regular fa-square text-slate-400 text-base"></i>';
 
                             rowsHtml += `
-                                <div class="flex justify-between items-center py-2 px-2.5 bg-slate-900 rounded-lg border border-slate-700/60 text-xs">
+                                <div class="flex justify-between items-center py-2 px-3 bg-slate-900 rounded-xl border border-slate-700/60 text-xs">
                                     <div onclick="toggleOrderItemReceived('${order.id}', ${idx})" class="flex items-center gap-2.5 min-w-0 pr-2 cursor-pointer flex-1">
                                         ${iconHtml}
                                         <span class="${checkedClass} font-semibold truncate">${it.name}</span>
                                     </div>
                                     <div class="flex items-center gap-3 shrink-0">
                                         <span class="font-mono font-bold text-slate-300">${it.qty} u.</span>
-                                        <button onclick="removeOrderItem('${order.id}', ${idx})" class="text-rose-400 hover:text-rose-300 p-1" title="Quitar ítem"><i class="fa-solid fa-xmark"></i></button>
+                                        <button onclick="removeOrderItem('${order.id}', ${idx})" class="text-rose-400 hover:text-rose-300 p-1" title="Quitar ítem"><i class="fa-solid fa-xmark text-sm"></i></button>
                                     </div>
                                 </div>
                             `;
                         });
                     } else {
-                        rowsHtml = `<p class="text-center text-xs text-slate-500 py-2">No hay insumos cargados en esta orden.</p>`;
+                        rowsHtml = `<p class="text-center text-xs text-slate-500 py-3">No hay insumos cargados en esta orden.</p>`;
                     }
 
                     itemsHtml = `
-                        <div class="mt-3 pt-3 border-t border-slate-700/80 space-y-3">
+                        <div class="mt-4 pt-4 border-t border-slate-700/80 space-y-3.5">
                             <div class="space-y-2">
-                                <label class="block text-[11px] font-bold text-slate-400 uppercase">Agregar insumo a la OC</label>
+                                <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">Agregar insumo a la OC</label>
                                 <div class="relative">
-                                    <input type="text" id="order-item-name-${order.id}" oninput="handleOrderInlineSearch(event, '${order.id}')" placeholder="Buscar reactivo o insumo..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-9 text-xs text-slate-100 focus:outline-none focus:border-lab-500">
-                                    <div id="order-dropdown-${order.id}" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-950 border border-slate-700 rounded-lg shadow-2xl max-h-36 overflow-y-auto z-50 divide-y divide-slate-800"></div>
+                                    <input type="text" id="order-item-name-${order.id}" oninput="handleOrderInlineSearch(event, '${order.id}')" placeholder="Buscar reactivo o insumo..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-xs text-slate-100 focus:outline-none focus:border-lab-500">
+                                    <div id="order-dropdown-${order.id}" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-950 border border-slate-700 rounded-xl shadow-2xl max-h-40 overflow-y-auto z-50 divide-y divide-slate-800"></div>
                                 </div>
                                 <div class="flex gap-2">
-                                    <input type="number" id="order-item-qty-${order.id}" min="1" value="1" placeholder="Cant." class="w-20 bg-slate-900 border border-slate-700 rounded-lg px-3 h-9 text-xs text-center font-bold text-slate-100 focus:outline-none focus:border-lab-500">
-                                    <button onclick="addOrUpdateItemToOrder('${order.id}')" class="flex-1 bg-sky-600 hover:bg-sky-700 text-white h-9 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 shadow">
+                                    <input type="number" id="order-item-qty-${order.id}" min="1" value="1" placeholder="Cant." class="w-24 bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-xs text-center font-bold text-slate-100 focus:outline-none focus:border-lab-500">
+                                    <button onclick="addOrUpdateItemToOrder('${order.id}')" class="flex-1 bg-sky-600 hover:bg-sky-700 text-white h-10 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shadow transition">
                                         <i class="fa-solid fa-plus"></i> Sumar Insumo
                                     </button>
                                 </div>
                             </div>
-                            <div class="space-y-1.5 max-h-40 overflow-y-auto">
+                            <div class="space-y-2 max-h-48 overflow-y-auto">
                                 ${rowsHtml}
                             </div>
                         </div>
@@ -1130,20 +1137,20 @@
                 }
 
                 const card = document.createElement('div');
-                card.className = "bg-slate-800 border border-slate-700/80 rounded-xl p-4 space-y-2 shadow-sm transition";
+                card.className = "bg-slate-900/90 border border-slate-700/80 rounded-2xl p-4.5 space-y-3 shadow-md transition hover:border-slate-600";
                 card.innerHTML = `
                     <div class="flex justify-between items-start cursor-pointer" onclick="toggleOrderAccordion('${order.id}')">
-                        <div class="space-y-0.5">
-                            <div class="flex items-center gap-2">
-                                <span class="text-xs font-mono text-lab-400 font-bold">${order.orderNumber}</span>
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2.5">
+                                <span class="text-xs font-mono text-lab-400 font-bold tracking-wide">${order.orderNumber}</span>
                                 ${statusBadge}
                             </div>
                             <h4 class="text-sm font-bold text-white">${order.provider}</h4>
-                            <p class="text-[11px] text-slate-400">Vto: ${order.expiry || 'No especificado'} | Ítems: ${itemsCount}</p>
+                            <p class="text-[11px] text-slate-400">Vto: ${order.expiry || 'No especificado'} &bull; Ítems: ${itemsCount}</p>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button onclick="event.stopPropagation(); deleteOrder('${order.id}')" class="text-rose-400 hover:text-rose-300 text-xs p-1" title="Eliminar OC"><i class="fa-solid fa-trash"></i></button>
-                            <i class="fa-solid fa-chevron-${isOpen ? 'up' : 'down'} text-xs text-slate-400 p-1"></i>
+                            <button onclick="event.stopPropagation(); deleteOrder('${order.id}')" class="text-rose-400 hover:text-rose-300 text-xs p-1.5 transition" title="Eliminar OC"><i class="fa-solid fa-trash"></i></button>
+                            <i class="fa-solid fa-chevron-${isOpen ? 'up' : 'down'} text-xs text-slate-400 p-1.5 transition"></i>
                         </div>
                     </div>
                     ${itemsHtml}
@@ -1158,7 +1165,7 @@
             ['inventory', 'scan', 'orders', 'labels', 'settings'].forEach(id => {
                 const pcBtn = document.getElementById(`pc-btn-${id}`);
                 const mobBtn = document.getElementById(`mob-btn-${id}`);
-                if (pcBtn) pcBtn.className = (id === tabId) ? "px-3 py-1.5 rounded-lg text-xs font-semibold text-lab-400 bg-slate-800 shadow transition flex items-center gap-1.5" : "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5";
+                if (pcBtn) pcBtn.className = (id === tabId) ? "px-3.5 py-1.5 rounded-lg text-xs font-semibold text-lab-400 bg-slate-800 shadow transition flex items-center gap-1.5" : "px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5";
                 if (mobBtn) mobBtn.className = (id === tabId) ? "flex flex-col items-center text-lab-500 transition px-2 py-1" : "flex flex-col items-center text-slate-400 hover:text-slate-200 transition px-2 py-1";
             });
             if (tabId === 'labels') populateLabelSelect();
@@ -1226,18 +1233,18 @@
                 });
 
                 let headerBadge = `<span class="text-xs text-slate-400 font-medium">${group.lots.length} lote(s)</span>`;
-                if (hasExpired) headerBadge = `<span class="bg-rose-950 text-rose-400 border border-rose-800 text-xs font-bold px-2 py-0.5 rounded">Vencido</span>`;
-                else if (minDays <= 30) headerBadge = `<span class="bg-amber-950 text-amber-400 border border-amber-800 text-xs font-bold px-2 py-0.5 rounded">Vence en ${minDays}d</span>`;
+                if (hasExpired) headerBadge = `<span class="bg-rose-950 text-rose-400 border border-rose-800 text-xs font-bold px-2.5 py-0.5 rounded-full">Vencido</span>`;
+                else if (minDays <= 30) headerBadge = `<span class="bg-amber-950 text-amber-400 border border-amber-800 text-xs font-bold px-2.5 py-0.5 rounded-full">Vence en ${minDays}d</span>`;
 
                 const typeBadgeClass = getTypeBadgeClass(group.type);
                 const isOpen = openAccordions[name] || false;
                 const card = document.createElement('div');
-                card.className = "bg-slate-800 border border-slate-700/80 rounded-xl overflow-hidden shadow-md";
+                card.className = "bg-slate-800 border border-slate-700/80 rounded-2xl overflow-hidden shadow-md";
                 
                 let lotsHtml = '';
                 group.lots.forEach(lot => {
                     lotsHtml += `
-                        <div class="bg-slate-900/90 p-3.5 rounded-lg border border-slate-700/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2.5">
+                        <div class="bg-slate-900/90 p-3.5 rounded-xl border border-slate-700/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2.5">
                             <div class="space-y-0.5 text-sm">
                                 <div class="text-white font-semibold flex items-center gap-2">
                                     <span>Lote: <span class="font-mono text-lab-400 font-bold">${lot.batch}</span></span>
@@ -1248,21 +1255,21 @@
                             <div class="flex items-center justify-between w-full sm:w-auto gap-3">
                                 <span class="font-bold text-sm ${lot.stock <= 3 ? 'text-rose-400 bg-rose-950 px-2.5 py-1 rounded border border-rose-900' : 'text-slate-200'}">${lot.stock} u.</span>
                                 <div class="flex gap-1.5">
-                                    <button onclick="adjustStockCloud('${lot.id}', 1, 'add')" class="w-8 h-8 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-xs" title="Sumar 1"><i class="fa-solid fa-plus"></i></button>
-                                    <button onclick="adjustStockCloud('${lot.id}', -1, 'deduct')" class="w-8 h-8 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-xs" title="Restar 1"><i class="fa-solid fa-minus"></i></button>
-                                    <button onclick="openEditItemModal('${lot.id}')" class="w-8 h-8 bg-slate-700 hover:bg-slate-600 text-sky-400 rounded-lg text-xs"><i class="fa-solid fa-pen"></i></button>
-                                    <button onclick="deleteItemCloud('${lot.id}')" class="w-8 h-8 bg-slate-700 hover:bg-rose-950 text-rose-400 rounded-lg text-xs"><i class="fa-solid fa-trash"></i></button>
+                                    <button onclick="adjustStockCloud('${lot.id}', 1, 'add')" class="w-8 h-8 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-xs transition" title="Sumar 1"><i class="fa-solid fa-plus"></i></button>
+                                    <button onclick="adjustStockCloud('${lot.id}', -1, 'deduct')" class="w-8 h-8 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-xs transition" title="Restar 1"><i class="fa-solid fa-minus"></i></button>
+                                    <button onclick="openEditItemModal('${lot.id}')" class="w-8 h-8 bg-slate-700 hover:bg-slate-600 text-sky-400 rounded-lg text-xs transition"><i class="fa-solid fa-pen"></i></button>
+                                    <button onclick="deleteItemCloud('${lot.id}')" class="w-8 h-8 bg-slate-700 hover:bg-rose-950 text-rose-400 rounded-lg text-xs transition"><i class="fa-solid fa-trash"></i></button>
                                 </div>
                             </div>
                         </div>`;
                 });
 
                 card.innerHTML = `
-                    <div onclick="toggleAccordion('${name.replace(/'/g, "\\'")}')" class="p-4 grid grid-cols-12 gap-2 items-center cursor-pointer hover:bg-slate-750 transition">
+                    <div onclick="toggleAccordion('${name.replace(/'/g, "\\'")}')" class="p-4.5 grid grid-cols-12 gap-2 items-center cursor-pointer hover:bg-slate-750 transition">
                         <div class="col-span-8 space-y-1.5">
                             <div class="flex items-center gap-2 flex-wrap">
-                                <span class="text-xs px-2 py-0.5 rounded-full border ${typeBadgeClass} font-semibold">${group.type}</span>
-                                <span class="text-xs px-2 py-0.5 rounded-full border bg-slate-900 text-slate-300 border-slate-700 font-medium">${group.section}</span>
+                                <span class="text-xs px-2.5 py-0.5 rounded-full border ${typeBadgeClass} font-semibold">${group.type}</span>
+                                <span class="text-xs px-2.5 py-0.5 rounded-full border bg-slate-900 text-slate-300 border-slate-700 font-medium">${group.section}</span>
                             </div>
                             <h3 class="text-base font-bold text-white leading-snug">${group.name}</h3>
                         </div>
@@ -1271,7 +1278,7 @@
                             <div>${headerBadge}</div>
                         </div>
                     </div>
-                    <div id="acc-${CSS.escape(name)}" class="${isOpen ? '' : 'hidden'} p-3.5 bg-slate-900/60 border-t border-slate-700/60 space-y-2.5">
+                    <div id="acc-${CSS.escape(name)}" class="${isOpen ? '' : 'hidden'} p-4 bg-slate-900/60 border-t border-slate-700/60 space-y-2.5">
                         ${lotsHtml}
                     </div>`;
                 container.appendChild(card);
@@ -1425,9 +1432,9 @@
 
         function setScanMode(mode) {
             scanMode = mode;
-            document.getElementById('modeBtnDeduct').className = mode === 'deduct' ? "py-2 rounded-md bg-lab-600 text-white font-medium transition text-xs text-center truncate" : "py-2 rounded-md text-slate-400 font-medium transition text-xs text-center truncate";
-            document.getElementById('modeBtnAdd').className = mode === 'add' ? "py-2 rounded-md bg-lab-600 text-white font-medium transition text-xs text-center truncate" : "py-2 rounded-md text-slate-400 font-medium transition text-xs text-center truncate";
-            document.getElementById('modeBtnConsult').className = mode === 'consult' ? "py-2 rounded-md bg-lab-600 text-white font-medium transition text-xs text-center truncate" : "py-2 rounded-md text-slate-400 font-medium transition text-xs text-center truncate";
+            document.getElementById('modeBtnDeduct').className = mode === 'deduct' ? "py-2.5 rounded-md bg-lab-600 text-white font-semibold transition text-xs text-center truncate" : "py-2.5 rounded-md text-slate-400 font-semibold transition text-xs text-center truncate";
+            document.getElementById('modeBtnAdd').className = mode === 'add' ? "py-2.5 rounded-md bg-lab-600 text-white font-semibold transition text-xs text-center truncate" : "py-2.5 rounded-md text-slate-400 font-semibold transition text-xs text-center truncate";
+            document.getElementById('modeBtnConsult').className = mode === 'consult' ? "py-2.5 rounded-md bg-lab-600 text-white font-semibold transition text-xs text-center truncate" : "py-2.5 rounded-md text-slate-400 font-semibold transition text-xs text-center truncate";
         }
 
         function openNewItemModal(prefillData = null) {
