@@ -154,9 +154,6 @@
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-sm"></i>
                         <input type="text" id="searchInput" oninput="filterInventory()" placeholder="Buscar reactivo, código o lote..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-11 pr-4 h-11 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-lab-500">
                     </div>
-                    <button onclick="openNewItemModal()" class="bg-lab-600 hover:bg-lab-700 text-white px-5 h-11 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 shadow transition shrink-0">
-                        <i class="fa-solid fa-plus text-sm"></i> Nuevo Lote
-                    </button>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <select id="typeFilter" onchange="filterInventory()" class="bg-slate-900 border border-slate-700 rounded-xl px-4 h-11 text-sm text-slate-200 focus:outline-none focus:border-lab-500">
@@ -228,17 +225,17 @@
                             <i class="fa-solid fa-bolt"></i>
                         </button>
                     </div>
-                    <select id="select-camera" onchange="appScanner.onCameraSelectChanged(event)" class="w-full bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-xl px-3 h-10 focus:outline-none focus:border-lab-500">
+                    <!-- Selector de cámaras oculto si no hay varios dispositivos para evitar texto molesto -->
+                    <select id="select-camera" onchange="appScanner.onCameraSelectChanged(event)" class="w-full bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-xl px-3 h-10 focus:outline-none focus:border-lab-500 hidden">
                         <option value="">Buscando cámaras...</option>
                     </select>
                 </div>
 
-                <div class="pt-3 border-t border-slate-700 space-y-2">
-                    <label class="block text-xs font-medium text-slate-400">Entrada manual / Pistola USB</label>
-                    <div class="flex gap-2">
-                        <input type="text" id="manualScanInput" onkeypress="handleManualScanKey(event)" placeholder="Escribí código o lote..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
-                        <button onclick="processScannedCode(document.getElementById('manualScanInput').value); document.getElementById('manualScanInput').value='';" class="bg-slate-700 hover:bg-slate-600 text-white px-4 h-10 rounded-xl text-xs font-semibold shrink-0 transition">Procesar</button>
-                    </div>
+                <!-- ÚNICO BOTÓN DE ENTRADA MANUAL -->
+                <div class="pt-3 border-t border-slate-700">
+                    <button onclick="openManualInputModal()" class="w-full bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow transition">
+                        <i class="fa-solid fa-keyboard text-lab-500"></i> Ingresar manualmente
+                    </button>
                 </div>
 
                 <div id="scanResultCard" class="hidden p-3.5 bg-slate-900 rounded-xl border border-slate-700 space-y-1">
@@ -340,6 +337,23 @@
             <span class="text-[10px] font-medium mt-0.5">Ajustes</span>
         </button>
     </nav>
+
+    <!-- MODAL DE ENTRADA MANUAL -->
+    <div id="manualInputModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-50 p-3">
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4">
+            <div class="flex justify-between items-center">
+                <h3 class="text-base font-bold text-white">Ingresar Código o Lote</h3>
+                <button onclick="closeManualInputModal()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="space-y-3">
+                <input type="text" id="manualScanInput" onkeypress="handleManualScanKeyModal(event)" placeholder="Escribí código o lote..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-11 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
+                <div class="flex gap-2">
+                    <button type="button" onclick="closeManualInputModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-xl text-sm font-semibold transition">Cancelar</button>
+                    <button type="button" onclick="processModalManualInput()" class="flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-xl text-sm font-semibold shadow transition">Procesar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL NUEVA ORDEN DE COMPRA -->
     <div id="orderModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-50 p-3">
@@ -689,9 +703,15 @@
                     this.availableDevices = await this.codeReader.listVideoInputDevices();
                     this.selectCamera.innerHTML = '';
                     if (this.availableDevices.length === 0) {
-                        this.selectCamera.innerHTML = '<option value="">No se encontraron cámaras</option>';
+                        this.selectCamera.classList.add('hidden');
                         return;
                     }
+                    if (this.availableDevices.length > 1) {
+                        this.selectCamera.classList.remove('hidden');
+                    } else {
+                        this.selectCamera.classList.add('hidden');
+                    }
+
                     let selectedDevice = this.availableDevices.find(device => 
                         /back|rear|trasera|environment|principal/i.test(device.label)
                     );
@@ -710,6 +730,7 @@
                     this.btnSwitch.disabled = this.availableDevices.length <= 1;
                 } catch (err) {
                     console.warn("Error enumerando cámaras:", err);
+                    this.selectCamera.classList.add('hidden');
                 }
             }
 
@@ -1381,11 +1402,29 @@
             return { code: code.trim(), batch: batch.trim(), expiry: expiry.trim() };
         }
 
-        function handleManualScanKey(event) {
+        function openManualInputModal() {
+            document.getElementById('manualScanInput').value = '';
+            document.getElementById('manualInputModal').classList.remove('hidden');
+            document.getElementById('manualInputModal').classList.add('flex');
+            setTimeout(() => document.getElementById('manualScanInput').focus(), 100);
+        }
+
+        function closeManualInputModal() {
+            document.getElementById('manualInputModal').classList.add('hidden');
+            document.getElementById('manualInputModal').classList.remove('flex');
+        }
+
+        function handleManualScanKeyModal(event) {
             if (event.key === 'Enter') {
-                processScannedCode(document.getElementById('manualScanInput').value);
-                document.getElementById('manualScanInput').value = '';
+                processModalManualInput();
             }
+        }
+
+        function processModalManualInput() {
+            const val = document.getElementById('manualScanInput').value.trim();
+            if (!val) return;
+            closeManualInputModal();
+            processScannedCode(val);
         }
 
         function processScannedCode(rawData) {
