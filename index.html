@@ -57,7 +57,7 @@
         }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen pb-24 md:pb-8 font-sans antialiased selection:bg-lab-500 selection:text-white" onclick="closeNameDropdownOutside(event)">
+<body class="bg-slate-900 text-slate-100 min-h-screen pb-24 md:pb-8 font-sans antialiased selection:bg-lab-500 selection:text-white" onclick="closeAllDropdownsOutside(event)">
 
     <!-- NOTIFICACIÓN FLOTANTE (TOAST) PERFECTAMENTE CENTRADA -->
     <div id="toastNotification" class="fixed top-16 inset-x-4 mx-auto z-[100] hidden items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border backdrop-blur-md max-w-sm text-sm toast-animate">
@@ -80,7 +80,7 @@
             </div>
             <div class="space-y-2 text-left">
                 <label class="block text-xs font-medium text-slate-400">Clave de acceso</label>
-                <input type="password" id="accessKeyInput" placeholder="Contraseña..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 h-11 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                <input type="password" id="accessKeyInput" onkeypress="if(event.key==='Enter') verifyKeyWithFirebase()" placeholder="Contraseña..." class="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 h-11 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
             </div>
             <button onclick="verifyKeyWithFirebase()" class="w-full bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-xl text-sm font-semibold shadow transition">
                 Desbloquear
@@ -148,9 +148,14 @@
             </div>
 
             <div class="bg-slate-800 p-3.5 rounded-xl border border-slate-700 shadow-sm space-y-3">
-                <div class="relative">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
-                    <input type="text" id="searchInput" oninput="filterInventory()" placeholder="Buscar reactivo, código o lote..." class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-10 pr-3 h-10 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-lab-500">
+                <div class="flex gap-2">
+                    <div class="relative flex-1">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400 text-sm"></i>
+                        <input type="text" id="searchInput" oninput="filterInventory()" placeholder="Buscar reactivo, código o lote..." class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-10 pr-3 h-10 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-lab-500">
+                    </div>
+                    <button onclick="openNewItemModal()" class="bg-lab-600 hover:bg-lab-700 text-white px-3.5 h-10 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow shrink-0">
+                        <i class="fa-solid fa-plus"></i> Nuevo
+                    </button>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                     <select id="typeFilter" onchange="filterInventory()" class="bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-200 focus:outline-none focus:border-lab-500">
@@ -254,9 +259,7 @@
                     </button>
                 </div>
 
-                <div id="ordersContainer" class="space-y-3">
-                    <!-- Se cargan dinámicamente -->
-                </div>
+                <div id="ordersContainer" class="space-y-3"></div>
                 <div id="emptyOrders" class="hidden p-6 text-center text-slate-400 text-xs">
                     No hay órdenes de compra registradas.
                 </div>
@@ -332,38 +335,62 @@
         </button>
     </nav>
 
-    <!-- MODAL NUEVA ORDEN DE COMPRA -->
+    <!-- MODAL NUEVA ORDEN DE COMPRA (CON CARGA ÍTEM POR ÍTEM) -->
     <div id="orderModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-50 p-3">
         <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 max-w-md w-full shadow-2xl space-y-3.5 max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center">
                 <h3 class="text-base font-bold text-white">Nueva Orden de Compra</h3>
                 <button onclick="closeNewOrderModal()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
-            <form id="orderForm" onsubmit="saveOrder(event)" class="space-y-3">
-                <div class="space-y-1">
-                    <label class="block text-xs font-medium text-slate-400">N° de Orden / OC</label>
-                    <input type="text" id="orderNumber" required placeholder="Ej: OC-2026-089" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
+            
+            <div class="space-y-3">
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="space-y-1">
+                        <label class="block text-xs font-medium text-slate-400">N° de Orden / OC</label>
+                        <input type="text" id="orderNumber" placeholder="OC-2026-089" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-xs font-medium text-slate-400">Proveedor</label>
+                        <input type="text" id="orderProvider" placeholder="Abbott / Roche..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                    </div>
                 </div>
-                <div class="space-y-1">
-                    <label class="block text-xs font-medium text-slate-400">Proveedor / Laboratorio</label>
-                    <input type="text" id="orderProvider" required placeholder="Ej: Abbott / Wiener / Roche" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+
+                <!-- CONSTRUCTOR DE ÍTEMS -->
+                <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-700 space-y-2.5">
+                    <label class="block text-xs font-bold text-lab-400 uppercase tracking-wider">Agregar ítem a la orden</label>
+                    
+                    <div class="relative" id="orderItemComboboxContainer">
+                        <input type="text" id="orderItemSearchInput" autocomplete="off" oninput="handleOrderItemSearch(event)" onfocus="handleOrderItemSearch(event)" placeholder="Buscar reactivo o insumo..." class="w-full bg-slate-800 border border-slate-700 rounded-lg pl-3 pr-8 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                        <i class="fa-solid fa-magnifying-glass absolute right-3 top-3 text-xs text-slate-500 pointer-events-none"></i>
+                        <div id="orderItemSuggestionsDropdown" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-950 border border-slate-700 rounded-lg shadow-2xl max-h-36 overflow-y-auto z-50 divide-y divide-slate-800"></div>
+                    </div>
+
+                    <div class="flex gap-2">
+                        <div class="flex-1">
+                            <input type="number" id="orderItemQty" min="1" value="1" placeholder="Cant." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 h-10 text-sm text-center font-bold text-slate-100 focus:outline-none focus:border-lab-500">
+                        </div>
+                        <button type="button" onclick="addOrderDraftItem()" class="bg-sky-600 hover:bg-sky-700 text-white px-4 h-10 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow shrink-0">
+                            <i class="fa-solid fa-plus"></i> Sumar ítem
+                        </button>
+                    </div>
                 </div>
-                <div class="space-y-1">
-                    <label class="block text-xs font-medium text-slate-400">Detalle / Insumos solicitados</label>
-                    <textarea id="orderItemsDesc" rows="3" required placeholder="Ej: 2 bultos de Architect rHTLV, 1 caja de calibradores..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-slate-100 focus:outline-none focus:border-lab-500"></textarea>
+
+                <!-- LISTA DE ÍTEMS AGREGADOS A ESTA OC -->
+                <div class="space-y-1.5">
+                    <div class="flex justify-between items-center">
+                        <span class="text-xs font-medium text-slate-400">Ítems en esta orden:</span>
+                        <span id="draftItemsCount" class="text-xs font-bold text-lab-400">0 ítems</span>
+                    </div>
+                    <div id="draftOrderItemsList" class="bg-slate-900 border border-slate-700 rounded-lg divide-y divide-slate-800 max-h-40 overflow-y-auto">
+                        <p class="p-3 text-center text-xs text-slate-500">Todavía no sumaste ítems.</p>
+                    </div>
                 </div>
-                <div class="space-y-1">
-                    <label class="block text-xs font-medium text-slate-400">Estado Inicial</label>
-                    <select id="orderStatus" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-200 focus:outline-none focus:border-lab-500">
-                        <option value="Pendiente">Pendiente de Entrega</option>
-                        <option value="Recibida">Recibida / Completada</option>
-                    </select>
-                </div>
+
                 <div class="flex gap-2 pt-2">
                     <button type="button" onclick="closeNewOrderModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-lg text-sm font-semibold">Cancelar</button>
-                    <button type="submit" class="flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-lg text-sm font-semibold shadow">Guardar Orden</button>
+                    <button type="button" onclick="saveOrder()" class="flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-lg text-sm font-semibold shadow">Guardar Orden</button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 
@@ -470,6 +497,7 @@
         let catalogArray = [];
         let ordersMap = {};
         let ordersArray = [];
+        let draftOrderItems = [];
         let openAccordions = {};
         let activeKpiFilter = 'all';
 
@@ -497,7 +525,7 @@
 
             firebase.database().ref('config/clave_maestra').once('value').then((snapshot) => {
                 const cloudKey = snapshot.val();
-                const masterKey = cloudKey || "ludo";
+                const masterKey = cloudKey || "ludovic2026";
 
                 if (inputVal === masterKey) {
                     document.getElementById('authScreen').classList.add('hidden');
@@ -524,11 +552,7 @@
                 const gain = ctx.createGain();
                 
                 osc.type = 'sine';
-                if (type === 'add') {
-                    osc.frequency.setValueAtTime(880, ctx.currentTime);
-                } else {
-                    osc.frequency.setValueAtTime(320, ctx.currentTime);
-                }
+                osc.frequency.setValueAtTime(type === 'add' ? 880 : 320, ctx.currentTime);
 
                 gain.gain.setValueAtTime(0.15, ctx.currentTime);
                 gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.18);
@@ -866,14 +890,19 @@
             document.getElementById('kpiCritical').innerText = criticalCount;
         }
 
+        function getAllStandardNames() {
+            let allNames = catalogArray.map(c => c.name);
+            inventoryArray.forEach(i => { if (i.name && !allNames.includes(i.name)) allNames.push(i.name); });
+            return allNames.sort((a, b) => a.localeCompare(b));
+        }
+
         function handleNameSearchInput(event) {
             const input = document.getElementById('itemName');
             const dropdown = document.getElementById('nameSuggestionsDropdown');
             const query = input.value.trim().toLowerCase();
-            if (query.length < 1) { dropdown.classList.add('hidden'); dropdown.innerHTML = ''; return; }
-            let allNames = catalogArray.map(c => c.name);
-            inventoryArray.forEach(i => { if (i.name && !allNames.includes(i.name)) allNames.push(i.name); });
-            const matches = allNames.filter(n => n.toLowerCase().includes(query));
+            const allNames = getAllStandardNames();
+            const matches = query.length === 0 ? allNames : allNames.filter(n => n.toLowerCase().includes(query));
+            
             if (matches.length === 0) {
                 dropdown.innerHTML = `<div class="p-2.5 text-xs text-slate-400">Usar: <b class="text-white">"${input.value}"</b></div>`;
                 dropdown.classList.remove('hidden');
@@ -884,21 +913,23 @@
                 const itemDiv = document.createElement('div');
                 itemDiv.className = "px-3 py-2 text-xs text-slate-200 hover:bg-slate-800 hover:text-lab-400 cursor-pointer font-medium transition";
                 itemDiv.innerText = name;
-                itemDiv.onclick = () => selectNameFromDropdown(name);
+                itemDiv.onclick = () => {
+                    document.getElementById('itemName').value = name;
+                    dropdown.classList.add('hidden');
+                };
                 dropdown.appendChild(itemDiv);
             });
             dropdown.classList.remove('hidden');
         }
 
-        function selectNameFromDropdown(name) {
-            document.getElementById('itemName').value = name;
-            document.getElementById('nameSuggestionsDropdown').classList.add('hidden');
-        }
-
-        function closeNameDropdownOutside(event) {
-            const container = document.getElementById('nameComboboxContainer');
-            if (container && !container.contains(event.target)) {
+        function closeAllDropdownsOutside(event) {
+            const nameContainer = document.getElementById('nameComboboxContainer');
+            if (nameContainer && !nameContainer.contains(event.target)) {
                 document.getElementById('nameSuggestionsDropdown').classList.add('hidden');
+            }
+            const orderContainer = document.getElementById('orderItemComboboxContainer');
+            if (orderContainer && !orderContainer.contains(event.target)) {
+                document.getElementById('orderItemSuggestionsDropdown').classList.add('hidden');
             }
         }
 
@@ -930,9 +961,14 @@
             }
         }
 
-        // --- GESTIÓN DE ÓRDENES DE COMPRA ---
+        // --- GESTIÓN DE ÓRDENES DE COMPRA (ÍTEM POR ÍTEM) ---
         function openNewOrderModal() {
-            document.getElementById('orderForm').reset();
+            document.getElementById('orderNumber').value = '';
+            document.getElementById('orderProvider').value = '';
+            document.getElementById('orderItemSearchInput').value = '';
+            document.getElementById('orderItemQty').value = 1;
+            draftOrderItems = [];
+            renderDraftOrderItems();
             document.getElementById('orderModal').classList.remove('hidden');
             document.getElementById('orderModal').classList.add('flex');
         }
@@ -942,25 +978,136 @@
             document.getElementById('orderModal').classList.remove('flex');
         }
 
-        function saveOrder(event) {
-            event.preventDefault();
+        function handleOrderItemSearch(event) {
+            const input = document.getElementById('orderItemSearchInput');
+            const dropdown = document.getElementById('orderItemSuggestionsDropdown');
+            const query = input.value.trim().toLowerCase();
+            const allNames = getAllStandardNames();
+            const matches = query.length === 0 ? allNames : allNames.filter(n => n.toLowerCase().includes(query));
+
+            if (matches.length === 0) {
+                if (query.length > 0) {
+                    dropdown.innerHTML = `<div class="p-2.5 text-xs text-slate-400">Usar: <b class="text-white">"${input.value}"</b></div>`;
+                    dropdown.classList.remove('hidden');
+                } else {
+                    dropdown.classList.add('hidden');
+                }
+                return;
+            }
+
+            dropdown.innerHTML = '';
+            matches.forEach(name => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = "px-3 py-2 text-xs text-slate-200 hover:bg-slate-800 hover:text-lab-400 cursor-pointer font-medium transition";
+                itemDiv.innerText = name;
+                itemDiv.onclick = () => {
+                    input.value = name;
+                    dropdown.classList.add('hidden');
+                    document.getElementById('orderItemQty').focus();
+                };
+                dropdown.appendChild(itemDiv);
+            });
+            dropdown.classList.remove('hidden');
+        }
+
+        function addOrderDraftItem() {
+            const nameInput = document.getElementById('orderItemSearchInput');
+            const qtyInput = document.getElementById('orderItemQty');
+            const name = nameInput.value.trim();
+            const qty = parseInt(qtyInput.value) || 1;
+
+            if (!name) {
+                alert("Seleccioná o escribí el nombre del ítem antes de sumarlo.");
+                return;
+            }
+
+            const existingIdx = draftOrderItems.findIndex(i => i.name.toLowerCase() === name.toLowerCase());
+            if (existingIdx !== -1) {
+                draftOrderItems[existingIdx].qty += qty;
+            } else {
+                draftOrderItems.push({ name: name, qty: qty, received: false });
+            }
+
+            nameInput.value = '';
+            qtyInput.value = 1;
+            document.getElementById('orderItemSuggestionsDropdown').classList.add('hidden');
+            renderDraftOrderItems();
+        }
+
+        function removeOrderDraftItem(index) {
+            draftOrderItems.splice(index, 1);
+            renderDraftOrderItems();
+        }
+
+        function renderDraftOrderItems() {
+            const container = document.getElementById('draftOrderItemsList');
+            const countBadge = document.getElementById('draftItemsCount');
+            countBadge.innerText = `${draftOrderItems.length} ítem(s)`;
+
+            if (draftOrderItems.length === 0) {
+                container.innerHTML = `<p class="p-3 text-center text-xs text-slate-500">Todavía no sumaste ítems.</p>`;
+                return;
+            }
+
+            container.innerHTML = '';
+            draftOrderItems.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = "flex justify-between items-center px-3 py-2 text-xs";
+                row.innerHTML = `
+                    <div class="min-w-0 pr-2">
+                        <span class="text-slate-200 font-semibold block truncate">${item.name}</span>
+                        <span class="text-slate-400">Cantidad pedida: <b class="text-white">${item.qty} u.</b></span>
+                    </div>
+                    <button type="button" onclick="removeOrderDraftItem(${index})" class="text-rose-400 hover:text-rose-300 p-1.5 shrink-0" title="Quitar">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function saveOrder() {
+            const orderNumber = document.getElementById('orderNumber').value.trim();
+            const provider = document.getElementById('orderProvider').value.trim();
+
+            if (!orderNumber || !provider) {
+                alert("Completá el N° de Orden y el Proveedor.");
+                return;
+            }
+            if (draftOrderItems.length === 0) {
+                alert("Sumá al menos un ítem a la orden de compra.");
+                return;
+            }
+
             const newOrder = {
-                orderNumber: document.getElementById('orderNumber').value.trim(),
-                provider: document.getElementById('orderProvider').value.trim(),
-                itemsDesc: document.getElementById('orderItemsDesc').value.trim(),
-                status: document.getElementById('orderStatus').value,
+                orderNumber: orderNumber,
+                provider: provider,
+                items: draftOrderItems,
+                status: 'Pendiente',
                 date: new Date().toLocaleDateString()
             };
+
             if (ordersRef) {
                 ordersRef.push(newOrder);
             }
             closeNewOrderModal();
         }
 
-        function updateOrderStatus(id, currentStatus) {
-            const nextStatus = currentStatus === 'Pendiente' ? 'Recibida' : 'Pendiente';
+        function toggleOrderItemReceived(orderId, itemIndex) {
+            const order = ordersMap[orderId];
+            if (!order || !order.items || !order.items[itemIndex]) return;
+
+            const updatedItems = [...order.items];
+            updatedItems[itemIndex].received = !updatedItems[itemIndex].received;
+
+            const allReceived = updatedItems.every(i => i.received);
+            const newStatus = allReceived ? 'Recibida' : 'Pendiente';
+
             if (ordersRef) {
-                ordersRef.child(id).update({ status: nextStatus });
+                ordersRef.child(orderId).update({
+                    items: updatedItems,
+                    status: newStatus
+                });
             }
         }
 
@@ -988,8 +1135,32 @@
                     ? '<span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">Recibida</span>'
                     : '<span class="bg-amber-950 text-amber-400 border border-amber-800 text-[10px] font-bold px-2 py-0.5 rounded">Pendiente</span>';
 
+                let itemsHtml = '';
+                if (Array.isArray(order.items) && order.items.length > 0) {
+                    itemsHtml = '<div class="bg-slate-800/80 rounded-lg border border-slate-700/60 divide-y divide-slate-700/60">';
+                    order.items.forEach((it, idx) => {
+                        const checkedClass = it.received ? 'line-through text-slate-500' : 'text-slate-200';
+                        const iconHtml = it.received 
+                            ? '<i class="fa-solid fa-square-check text-lab-500 text-sm"></i>' 
+                            : '<i class="fa-regular fa-square text-slate-400 text-sm"></i>';
+
+                        itemsHtml += `
+                            <div onclick="toggleOrderItemReceived('${order.id}', ${idx})" class="flex justify-between items-center p-2.5 text-xs cursor-pointer hover:bg-slate-800 transition">
+                                <div class="flex items-center gap-2 min-w-0 pr-2">
+                                    ${iconHtml}
+                                    <span class="${checkedClass} font-medium truncate">${it.name}</span>
+                                </div>
+                                <span class="font-mono font-bold text-slate-300 shrink-0">${it.qty} u.</span>
+                            </div>
+                        `;
+                    });
+                    itemsHtml += '</div>';
+                } else if (order.itemsDesc) {
+                    itemsHtml = `<p class="text-xs text-slate-300 bg-slate-800/80 p-2 rounded border border-slate-700/50">${order.itemsDesc}</p>`;
+                }
+
                 const card = document.createElement('div');
-                card.className = "bg-slate-900 border border-slate-700/80 rounded-xl p-3.5 space-y-2 shadow-sm";
+                card.className = "bg-slate-900 border border-slate-700/80 rounded-xl p-3.5 space-y-2.5 shadow-sm";
                 card.innerHTML = `
                     <div class="flex justify-between items-start">
                         <div>
@@ -1001,12 +1172,10 @@
                             <button onclick="deleteOrder('${order.id}')" class="text-rose-400 hover:text-rose-300 text-xs p-1" title="Eliminar OC"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
-                    <p class="text-xs text-slate-300 bg-slate-800/80 p-2 rounded border border-slate-700/50">${order.itemsDesc}</p>
-                    <div class="flex justify-between items-center pt-1 text-[11px] text-slate-400">
+                    ${itemsHtml}
+                    <div class="flex justify-between items-center pt-0.5 text-[11px] text-slate-400">
                         <span>Creada: ${order.date || 'Reciente'}</span>
-                        <button onclick="updateOrderStatus('${order.id}', '${order.status}')" class="text-xs text-lab-400 hover:underline font-medium">
-                            Cambiar a ${isReceived ? 'Pendiente' : 'Recibida'}
-                        </button>
+                        <span>Tocá cada ítem para marcar recibido</span>
                     </div>
                 `;
                 container.appendChild(card);
@@ -1268,7 +1437,6 @@
         function executeScanAction() {
             if (!activeScanItem) return;
             const qty = parseInt(document.getElementById('scanModalQty').value) || 1;
-            const cardContent = document.getElementById('scanResultContent');
             const card = document.getElementById('scanResultCard');
             card.classList.add('hidden');
 
@@ -1332,7 +1500,7 @@
 
         function saveItem(event) {
             event.preventDefault();
-            const key = document.getElementById('editKey5').value || document.getElementById('editKey').value;
+            const key = document.getElementById('editKey').value;
             const newItem = {
                 code: document.getElementById('itemCode').value,
                 name: document.getElementById('itemName').value,
