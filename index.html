@@ -33,6 +33,12 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
         body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         .mono { font-family: 'JetBrains Mono', monospace; }
+        /* Forzar normalización en inputs de fecha nativos para dispositivos móviles */
+        input[type="date"] {
+            -webkit-appearance: none;
+            appearance: none;
+            min-height: 2.5rem;
+        }
         @keyframes scan-laser {
             0% { top: 5%; opacity: 0.3; }
             50% { top: 90%; opacity: 0.9; }
@@ -446,7 +452,7 @@
                     </div>
                 </div>
 
-                <!-- CAMPO VENCIMIENTO CORREGIDO: ALTURA H-10 Y PADDING HOMOGÉNEO -->
+                <!-- CAMPO VENCIMIENTO CORREGIDO Y NORMALIZADO -->
                 <div class="space-y-1">
                     <label class="block text-xs font-medium text-slate-400">Vencimiento</label>
                     <input type="date" id="itemExpiry" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
