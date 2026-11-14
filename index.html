@@ -75,7 +75,7 @@
                 <i class="fa-solid fa-shield-halved"></i>
             </div>
             <div class="space-y-1">
-                <h2 class="text-lg font-bold text-white">LudovicApp</h2>
+                <h2 class="text-lg font-bold text-white">LudovicApp Seguro</h2>
                 <p class="text-xs text-slate-400">Ingresá la clave de acceso para desbloquear el inventario.</p>
             </div>
             <div class="space-y-2 text-left">
@@ -102,16 +102,19 @@
             </div>
 
             <nav class="hidden md:flex items-center justify-center space-x-1 bg-slate-900/60 p-1 rounded-xl border border-slate-700 absolute left-1/2 -translate-x-1/2">
-                <button onclick="switchTab('inventory')" id="pc-btn-inventory" class="px-3.5 py-1.5 rounded-lg text-sm font-semibold text-lab-400 bg-slate-800 shadow transition flex items-center gap-1.5">
+                <button onclick="switchTab('inventory')" id="pc-btn-inventory" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-lab-400 bg-slate-800 shadow transition flex items-center gap-1.5">
                     <i class="fa-solid fa-boxes-stacked"></i> Inventario
                 </button>
-                <button onclick="switchTab('scan')" id="pc-btn-scan" class="px-3.5 py-1.5 rounded-lg text-sm font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                <button onclick="switchTab('scan')" id="pc-btn-scan" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
                     <i class="fa-solid fa-barcode"></i> Escáner
                 </button>
-                <button onclick="switchTab('labels')" id="pc-btn-labels" class="px-3.5 py-1.5 rounded-lg text-sm font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                <button onclick="switchTab('orders')" id="pc-btn-orders" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-file-invoice-dollar"></i> Órdenes
+                </button>
+                <button onclick="switchTab('labels')" id="pc-btn-labels" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
                     <i class="fa-solid fa-tags"></i> Etiquetas
                 </button>
-                <button onclick="switchTab('settings')" id="pc-btn-settings" class="px-3.5 py-1.5 rounded-lg text-sm font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
+                <button onclick="switchTab('settings')" id="pc-btn-settings" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5">
                     <i class="fa-solid fa-gear"></i> Ajustes
                 </button>
             </nav>
@@ -131,15 +134,15 @@
         <section id="tab-inventory" class="tab-content space-y-3.5">
             <div class="grid grid-cols-3 gap-3">
                 <div onclick="setKpiFilter('all')" id="kpiCardAll" class="bg-slate-800/90 border-2 border-slate-700/70 rounded-xl p-3 text-center shadow-sm cursor-pointer hover:border-lab-500 transition">
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total🧪</p>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Lotes</p>
                     <h4 id="kpiTotal" class="text-xl font-extrabold text-white mt-1">0</h4>
                 </div>
                 <div onclick="setKpiFilter('expiring')" id="kpiCardExpiring" class="bg-slate-800/90 border-2 border-slate-700/70 rounded-xl p-3 text-center shadow-sm cursor-pointer hover:border-amber-500 transition">
-                    <p class="text-xs font-bold text-amber-400/90 uppercase tracking-wider">30d vto⏰</p>
+                    <p class="text-xs font-bold text-amber-400/90 uppercase tracking-wider">&lt; 30d Vto</p>
                     <h4 id="kpiExpiring" class="text-xl font-extrabold text-amber-400 mt-1">0</h4>
                 </div>
                 <div onclick="setKpiFilter('critical')" id="kpiCardCritical" class="bg-slate-800/90 border-2 border-slate-700/70 rounded-xl p-3 text-center shadow-sm cursor-pointer hover:border-rose-500 transition">
-                    <p class="text-xs font-bold text-rose-400/90 uppercase tracking-wider">Crítico🚨</p>
+                    <p class="text-xs font-bold text-rose-400/90 uppercase tracking-wider">Crítico</p>
                     <h4 id="kpiCritical" class="text-xl font-extrabold text-rose-400 mt-1">0</h4>
                 </div>
             </div>
@@ -159,9 +162,9 @@
                     </select>
                     <select id="sectionFilter" onchange="filterInventory()" class="bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-200 focus:outline-none focus:border-lab-500">
                         <option value="">Todas las secciones</option>
-                        <option value="Inmunología">Inmunología</option>
                         <option value="Química">Química Clínica</option>
                         <option value="Hematología">Hematología</option>
+                        <option value="Inmunología">Inmunología</option>
                         <option value="Bacteriología">Bacteriología</option>
                         <option value="Biología Molecular">Biología Molecular</option>
                     </select>
@@ -181,7 +184,7 @@
             <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg max-w-xl mx-auto space-y-4">
                 <div class="flex flex-col gap-3">
                     <h2 class="text-base font-bold flex items-center gap-2">
-                        <i class="fa-solid fa-barcode text-lab-500"></i> Escanee el código
+                        <i class="fa-solid fa-barcode text-lab-500"></i> Escáner DataMatrix Industrial
                     </h2>
                     <div class="grid grid-cols-3 bg-slate-900 rounded-lg p-1 border border-slate-700 text-xs gap-1">
                         <button onclick="setScanMode('deduct')" id="modeBtnDeduct" class="py-2 rounded-md bg-lab-600 text-white font-medium transition text-xs text-center truncate">⚡ Descontar</button>
@@ -239,7 +242,28 @@
             </div>
         </section>
 
-        <!-- 3. PESTAÑA ETIQUETAS -->
+        <!-- 3. PESTAÑA ÓRDENES DE COMPRA -->
+        <section id="tab-orders" class="tab-content hidden space-y-4">
+            <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg max-w-xl mx-auto space-y-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-base font-bold flex items-center gap-2">
+                        <i class="fa-solid fa-file-invoice-dollar text-lab-500"></i> Órdenes de Compra
+                    </h2>
+                    <button onclick="openNewOrderModal()" class="bg-lab-600 hover:bg-lab-700 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow">
+                        <i class="fa-solid fa-plus"></i> Nueva OC
+                    </button>
+                </div>
+
+                <div id="ordersContainer" class="space-y-3">
+                    <!-- Se cargan dinámicamente -->
+                </div>
+                <div id="emptyOrders" class="hidden p-6 text-center text-slate-400 text-xs">
+                    No hay órdenes de compra registradas.
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. PESTAÑA ETIQUETAS -->
         <section id="tab-labels" class="tab-content hidden space-y-4">
             <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg max-w-xl mx-auto space-y-4">
                 <h2 class="text-base font-bold flex items-center gap-2">
@@ -262,7 +286,7 @@
             </div>
         </section>
 
-        <!-- 4. PESTAÑA AJUSTES -->
+        <!-- 5. PESTAÑA AJUSTES -->
         <section id="tab-settings" class="tab-content hidden space-y-4">
             <div class="bg-slate-800 p-5 rounded-xl border border-slate-700 shadow-lg max-w-xl mx-auto space-y-3.5">
                 <h2 class="text-base font-bold flex items-center gap-2 text-white">
@@ -286,23 +310,62 @@
 
     <!-- BARRA DE NAVEGACIÓN INFERIOR (MÓVIL) -->
     <nav class="fixed bottom-0 left-0 right-0 bg-slate-800/95 backdrop-blur-md border-t border-slate-700/80 px-2 py-1.5 flex justify-around items-center z-50 md:hidden shadow-2xl">
-        <button onclick="switchTab('inventory')" id="mob-btn-inventory" class="flex flex-col items-center text-lab-500 transition px-3 py-1">
-            <i class="fa-solid fa-boxes-stacked text-lg"></i>
-            <span class="text-xs font-medium mt-0.5">Inventario</span>
+        <button onclick="switchTab('inventory')" id="mob-btn-inventory" class="flex flex-col items-center text-lab-500 transition px-2 py-1">
+            <i class="fa-solid fa-boxes-stacked text-base"></i>
+            <span class="text-[10px] font-medium mt-0.5">Inventario</span>
         </button>
-        <button onclick="switchTab('scan')" id="mob-btn-scan" class="flex flex-col items-center text-slate-400 hover:text-slate-200 transition px-3 py-1">
-            <i class="fa-solid fa-barcode text-lg"></i>
-            <span class="text-xs font-medium mt-0.5">Escanear</span>
+        <button onclick="switchTab('scan')" id="mob-btn-scan" class="flex flex-col items-center text-slate-400 hover:text-slate-200 transition px-2 py-1">
+            <i class="fa-solid fa-barcode text-base"></i>
+            <span class="text-[10px] font-medium mt-0.5">Escanear</span>
         </button>
-        <button onclick="switchTab('labels')" id="mob-btn-labels" class="flex flex-col items-center text-slate-400 hover:text-slate-200 transition px-3 py-1">
-            <i class="fa-solid fa-tags text-lg"></i>
-            <span class="text-xs font-medium mt-0.5">Etiquetas</span>
+        <button onclick="switchTab('orders')" id="mob-btn-orders" class="flex flex-col items-center text-slate-400 hover:text-slate-200 transition px-2 py-1">
+            <i class="fa-solid fa-file-invoice-dollar text-base"></i>
+            <span class="text-[10px] font-medium mt-0.5">Órdenes</span>
         </button>
-        <button onclick="switchTab('settings')" id="mob-btn-settings" class="flex flex-col items-center text-slate-400 hover:text-slate-200 transition px-3 py-1">
-            <i class="fa-solid fa-gear text-lg"></i>
-            <span class="text-xs font-medium mt-0.5">Ajustes</span>
+        <button onclick="switchTab('labels')" id="mob-btn-labels" class="flex flex-col items-center text-slate-400 hover:text-slate-200 transition px-2 py-1">
+            <i class="fa-solid fa-tags text-base"></i>
+            <span class="text-[10px] font-medium mt-0.5">Etiquetas</span>
+        </button>
+        <button onclick="switchTab('settings')" id="mob-btn-settings" class="flex flex-col items-center text-slate-400 hover:text-slate-200 transition px-2 py-1">
+            <i class="fa-solid fa-gear text-base"></i>
+            <span class="text-[10px] font-medium mt-0.5">Ajustes</span>
         </button>
     </nav>
+
+    <!-- MODAL NUEVA ORDEN DE COMPRA -->
+    <div id="orderModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-50 p-3">
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 max-w-md w-full shadow-2xl space-y-3.5 max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center">
+                <h3 class="text-base font-bold text-white">Nueva Orden de Compra</h3>
+                <button onclick="closeNewOrderModal()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <form id="orderForm" onsubmit="saveOrder(event)" class="space-y-3">
+                <div class="space-y-1">
+                    <label class="block text-xs font-medium text-slate-400">N° de Orden / OC</label>
+                    <input type="text" id="orderNumber" required placeholder="Ej: OC-2026-089" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-medium text-slate-400">Proveedor / Laboratorio</label>
+                    <input type="text" id="orderProvider" required placeholder="Ej: Abbott / Wiener / Roche" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-medium text-slate-400">Detalle / Insumos solicitados</label>
+                    <textarea id="orderItemsDesc" rows="3" required placeholder="Ej: 2 bultos de Architect rHTLV, 1 caja de calibradores..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-slate-100 focus:outline-none focus:border-lab-500"></textarea>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-medium text-slate-400">Estado Inicial</label>
+                    <select id="orderStatus" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-200 focus:outline-none focus:border-lab-500">
+                        <option value="Pendiente">Pendiente de Entrega</option>
+                        <option value="Recibida">Recibida / Completada</option>
+                    </select>
+                </div>
+                <div class="flex gap-2 pt-2">
+                    <button type="button" onclick="closeNewOrderModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-lg text-sm font-semibold">Cancelar</button>
+                    <button type="submit" class="flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-lg text-sm font-semibold shadow">Guardar Orden</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- VENTANA MODAL: CONFIRMAR MOVIMIENTO -->
     <div id="scanActionModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-50 p-3">
@@ -366,9 +429,9 @@
                     <div class="space-y-1">
                         <label class="block text-xs font-medium text-slate-400">Sección</label>
                         <select id="itemSection" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 h-10 text-sm text-slate-200 focus:outline-none focus:border-lab-500">
-                            <option value="Inmunología">Inmunología</option>
                             <option value="Química">Química Clínica</option>
                             <option value="Hematología">Hematología</option>
+                            <option value="Inmunología">Inmunología</option>
                             <option value="Bacteriología">Bacteriología</option>
                             <option value="Biología Molecular">Biología Molecular</option>
                         </select>
@@ -405,12 +468,15 @@
         let inventoryArray = []; 
         let catalogMap = {};
         let catalogArray = [];
+        let ordersMap = {};
+        let ordersArray = [];
         let openAccordions = {};
         let activeKpiFilter = 'all';
 
         let scanMode = 'deduct';
         let dbRef = null;
         let catalogRef = null;
+        let ordersRef = null;
         let activeScanItem = null;
         let activeScanParsed = null;
         let appScanner = null;
@@ -431,7 +497,7 @@
 
             firebase.database().ref('config/clave_maestra').once('value').then((snapshot) => {
                 const cloudKey = snapshot.val();
-                const masterKey = cloudKey || "ludovica";
+                const masterKey = cloudKey || "ludovic2026";
 
                 if (inputVal === masterKey) {
                     document.getElementById('authScreen').classList.add('hidden');
@@ -510,6 +576,7 @@
         function initAppAfterAuth() {
             dbRef = firebase.database().ref('reactivos');
             catalogRef = firebase.database().ref('catalogo_nombres');
+            ordersRef = firebase.database().ref('ordenes_compra');
             updateCloudStatus('connecting', 'Sincronizando...');
 
             dbRef.on('value', (snapshot) => {
@@ -532,6 +599,16 @@
                     name: catalogMap[key].name
                 }));
                 updateCatalogUI();
+            });
+
+            ordersRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                ordersMap = data || {};
+                ordersArray = Object.keys(ordersMap).map(key => ({
+                    id: key,
+                    ...ordersMap[key]
+                }));
+                updateOrdersUI();
             });
 
             appScanner = new LudovicStockScanner();
@@ -853,14 +930,97 @@
             }
         }
 
+        // --- GESTIÓN DE ÓRDENES DE COMPRA ---
+        function openNewOrderModal() {
+            document.getElementById('orderForm').reset();
+            document.getElementById('orderModal').classList.remove('hidden');
+            document.getElementById('orderModal').classList.add('flex');
+        }
+
+        function closeNewOrderModal() {
+            document.getElementById('orderModal').classList.add('hidden');
+            document.getElementById('orderModal').classList.remove('flex');
+        }
+
+        function saveOrder(event) {
+            event.preventDefault();
+            const newOrder = {
+                orderNumber: document.getElementById('orderNumber').value.trim(),
+                provider: document.getElementById('orderProvider').value.trim(),
+                itemsDesc: document.getElementById('orderItemsDesc').value.trim(),
+                status: document.getElementById('orderStatus').value,
+                date: new Date().toLocaleDateString()
+            };
+            if (ordersRef) {
+                ordersRef.push(newOrder);
+            }
+            closeNewOrderModal();
+        }
+
+        function updateOrderStatus(id, currentStatus) {
+            const nextStatus = currentStatus === 'Pendiente' ? 'Recibida' : 'Pendiente';
+            if (ordersRef) {
+                ordersRef.child(id).update({ status: nextStatus });
+            }
+        }
+
+        function deleteOrder(id) {
+            if (confirm('¿Eliminar esta orden de compra?') && ordersRef) {
+                ordersRef.child(id).remove();
+            }
+        }
+
+        function updateOrdersUI() {
+            const container = document.getElementById('ordersContainer');
+            const emptyState = document.getElementById('emptyOrders');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (ordersArray.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            }
+            emptyState.classList.add('hidden');
+
+            ordersArray.forEach(order => {
+                const isReceived = order.status === 'Recibida';
+                const statusBadge = isReceived 
+                    ? '<span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">Recibida</span>'
+                    : '<span class="bg-amber-950 text-amber-400 border border-amber-800 text-[10px] font-bold px-2 py-0.5 rounded">Pendiente</span>';
+
+                const card = document.createElement('div');
+                card.className = "bg-slate-900 border border-slate-700/80 rounded-xl p-3.5 space-y-2 shadow-sm";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-xs font-mono text-lab-400 font-bold">${order.orderNumber}</span>
+                            <h4 class="text-sm font-bold text-white">${order.provider}</h4>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            ${statusBadge}
+                            <button onclick="deleteOrder('${order.id}')" class="text-rose-400 hover:text-rose-300 text-xs p-1" title="Eliminar OC"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-300 bg-slate-800/80 p-2 rounded border border-slate-700/50">${order.itemsDesc}</p>
+                    <div class="flex justify-between items-center pt-1 text-[11px] text-slate-400">
+                        <span>Creada: ${order.date || 'Reciente'}</span>
+                        <button onclick="updateOrderStatus('${order.id}', '${order.status}')" class="text-xs text-lab-400 hover:underline font-medium">
+                            Cambiar a ${isReceived ? 'Pendiente' : 'Recibida'}
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            ['inventory', 'scan', 'labels', 'settings'].forEach(id => {
+            ['inventory', 'scan', 'orders', 'labels', 'settings'].forEach(id => {
                 const pcBtn = document.getElementById(`pc-btn-${id}`);
                 const mobBtn = document.getElementById(`mob-btn-${id}`);
-                if (pcBtn) pcBtn.className = (id === tabId) ? "px-3.5 py-1.5 rounded-lg text-sm font-semibold text-lab-400 bg-slate-800 shadow transition flex items-center gap-1.5" : "px-3.5 py-1.5 rounded-lg text-sm font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5";
-                if (mobBtn) mobBtn.className = (id === tabId) ? "flex flex-col items-center text-lab-500 transition px-3 py-1" : "flex flex-col items-center text-slate-400 hover:text-slate-200 transition px-3 py-1";
+                if (pcBtn) pcBtn.className = (id === tabId) ? "px-3 py-1.5 rounded-lg text-xs font-semibold text-lab-400 bg-slate-800 shadow transition flex items-center gap-1.5" : "px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition flex items-center gap-1.5";
+                if (mobBtn) mobBtn.className = (id === tabId) ? "flex flex-col items-center text-lab-500 transition px-2 py-1" : "flex flex-col items-center text-slate-400 hover:text-slate-200 transition px-2 py-1";
             });
             if (tabId === 'labels') populateLabelSelect();
             if (tabId !== 'scan' && appScanner && appScanner.isScanning) {
@@ -876,7 +1036,7 @@
                     return 'bg-purple-950 text-purple-400 border-purple-800';
                 case 'Consumible':
                     return 'bg-amber-950 text-amber-400 border-amber-800';
-                default: // Reactivo
+                default: 
                     return 'bg-emerald-950 text-emerald-400 border-emerald-800';
             }
         }
@@ -1172,7 +1332,7 @@
 
         function saveItem(event) {
             event.preventDefault();
-            const key = document.getElementById('editKey').value;
+            const key = document.getElementById('editKey5').value || document.getElementById('editKey').value;
             const newItem = {
                 code: document.getElementById('itemCode').value,
                 name: document.getElementById('itemName').value,
