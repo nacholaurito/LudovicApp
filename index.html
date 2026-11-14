@@ -335,60 +335,31 @@
         </button>
     </nav>
 
-    <!-- MODAL NUEVA ORDEN DE COMPRA (CON CARGA ÍTEM POR ÍTEM) -->
+    <!-- MODAL NUEVA ORDEN DE COMPRA (CREAR CABECERA) -->
     <div id="orderModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-50 p-3">
-        <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 max-w-md w-full shadow-2xl space-y-3.5 max-h-[90vh] overflow-y-auto">
+        <div class="bg-slate-800 border border-slate-700 rounded-xl p-4 max-w-sm w-full shadow-2xl space-y-3.5">
             <div class="flex justify-between items-center">
                 <h3 class="text-base font-bold text-white">Nueva Orden de Compra</h3>
                 <button onclick="closeNewOrderModal()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             
             <div class="space-y-3">
-                <div class="grid grid-cols-2 gap-2">
-                    <div class="space-y-1">
-                        <label class="block text-xs font-medium text-slate-400">N° de Orden / OC</label>
-                        <input type="text" id="orderNumber" placeholder="OC-2026-089" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="block text-xs font-medium text-slate-400">Proveedor</label>
-                        <input type="text" id="orderProvider" placeholder="Abbott / Roche..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
-                    </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-medium text-slate-400">N° de Orden / OC</label>
+                    <input type="text" id="orderNumber" placeholder="OC-2026-089" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
                 </div>
-
-                <!-- CONSTRUCTOR DE ÍTEMS -->
-                <div class="bg-slate-900/90 p-3 rounded-xl border border-slate-700 space-y-2.5">
-                    <label class="block text-xs font-bold text-lab-400 uppercase tracking-wider">Agregar ítem a la orden</label>
-                    
-                    <div class="relative" id="orderItemComboboxContainer">
-                        <input type="text" id="orderItemSearchInput" autocomplete="off" oninput="handleOrderItemSearch(event)" onfocus="handleOrderItemSearch(event)" placeholder="Buscar reactivo o insumo..." class="w-full bg-slate-800 border border-slate-700 rounded-lg pl-3 pr-8 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
-                        <i class="fa-solid fa-magnifying-glass absolute right-3 top-3 text-xs text-slate-500 pointer-events-none"></i>
-                        <div id="orderItemSuggestionsDropdown" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-950 border border-slate-700 rounded-lg shadow-2xl max-h-36 overflow-y-auto z-50 divide-y divide-slate-800"></div>
-                    </div>
-
-                    <div class="flex gap-2">
-                        <div class="flex-1">
-                            <input type="number" id="orderItemQty" min="1" value="1" placeholder="Cant." class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 h-10 text-sm text-center font-bold text-slate-100 focus:outline-none focus:border-lab-500">
-                        </div>
-                        <button type="button" onclick="addOrderDraftItem()" class="bg-sky-600 hover:bg-sky-700 text-white px-4 h-10 rounded-lg text-xs font-semibold flex items-center gap-1.5 shadow shrink-0">
-                            <i class="fa-solid fa-plus"></i> Sumar ítem
-                        </button>
-                    </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-medium text-slate-400">Proveedor</label>
+                    <input type="text" id="orderProvider" placeholder="Abbott / Roche..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
                 </div>
-
-                <!-- LISTA DE ÍTEMS AGREGADOS A ESTA OC -->
-                <div class="space-y-1.5">
-                    <div class="flex justify-between items-center">
-                        <span class="text-xs font-medium text-slate-400">Ítems en esta orden:</span>
-                        <span id="draftItemsCount" class="text-xs font-bold text-lab-400">0 ítems</span>
-                    </div>
-                    <div id="draftOrderItemsList" class="bg-slate-900 border border-slate-700 rounded-lg divide-y divide-slate-800 max-h-40 overflow-y-auto">
-                        <p class="p-3 text-center text-xs text-slate-500">Todavía no sumaste ítems.</p>
-                    </div>
+                <div class="space-y-1">
+                    <label class="block text-xs font-medium text-slate-400">Vencimiento estimado</label>
+                    <input type="date" id="orderExpiry" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
                 </div>
 
                 <div class="flex gap-2 pt-2">
                     <button type="button" onclick="closeNewOrderModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-lg text-sm font-semibold">Cancelar</button>
-                    <button type="button" onclick="saveOrder()" class="flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-lg text-sm font-semibold shadow">Guardar Orden</button>
+                    <button type="button" onclick="saveNewOrderHeader()" class="flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-lg text-sm font-semibold shadow">Crear OC</button>
                 </div>
             </div>
         </div>
@@ -497,7 +468,7 @@
         let catalogArray = [];
         let ordersMap = {};
         let ordersArray = [];
-        let draftOrderItems = [];
+        let openOrderAccordions = {};
         let openAccordions = {};
         let activeKpiFilter = 'all';
 
@@ -927,10 +898,6 @@
             if (nameContainer && !nameContainer.contains(event.target)) {
                 document.getElementById('nameSuggestionsDropdown').classList.add('hidden');
             }
-            const orderContainer = document.getElementById('orderItemComboboxContainer');
-            if (orderContainer && !orderContainer.contains(event.target)) {
-                document.getElementById('orderItemSuggestionsDropdown').classList.add('hidden');
-            }
         }
 
         function addCatalogName() {
@@ -961,14 +928,11 @@
             }
         }
 
-        // --- GESTIÓN DE ÓRDENES DE COMPRA (ÍTEM POR ÍTEM) ---
+        // --- GESTIÓN DE ÓRDENES DE COMPRA (CABECERA + DESPLEGABLE DE ÍTEMS) ---
         function openNewOrderModal() {
             document.getElementById('orderNumber').value = '';
             document.getElementById('orderProvider').value = '';
-            document.getElementById('orderItemSearchInput').value = '';
-            document.getElementById('orderItemQty').value = 1;
-            draftOrderItems = [];
-            renderDraftOrderItems();
+            document.getElementById('orderExpiry').value = '';
             document.getElementById('orderModal').classList.remove('hidden');
             document.getElementById('orderModal').classList.add('flex');
         }
@@ -978,111 +942,21 @@
             document.getElementById('orderModal').classList.remove('flex');
         }
 
-        function handleOrderItemSearch(event) {
-            const input = document.getElementById('orderItemSearchInput');
-            const dropdown = document.getElementById('orderItemSuggestionsDropdown');
-            const query = input.value.trim().toLowerCase();
-            const allNames = getAllStandardNames();
-            const matches = query.length === 0 ? allNames : allNames.filter(n => n.toLowerCase().includes(query));
-
-            if (matches.length === 0) {
-                if (query.length > 0) {
-                    dropdown.innerHTML = `<div class="p-2.5 text-xs text-slate-400">Usar: <b class="text-white">"${input.value}"</b></div>`;
-                    dropdown.classList.remove('hidden');
-                } else {
-                    dropdown.classList.add('hidden');
-                }
-                return;
-            }
-
-            dropdown.innerHTML = '';
-            matches.forEach(name => {
-                const itemDiv = document.createElement('div');
-                itemDiv.className = "px-3 py-2 text-xs text-slate-200 hover:bg-slate-800 hover:text-lab-400 cursor-pointer font-medium transition";
-                itemDiv.innerText = name;
-                itemDiv.onclick = () => {
-                    input.value = name;
-                    dropdown.classList.add('hidden');
-                    document.getElementById('orderItemQty').focus();
-                };
-                dropdown.appendChild(itemDiv);
-            });
-            dropdown.classList.remove('hidden');
-        }
-
-        function addOrderDraftItem() {
-            const nameInput = document.getElementById('orderItemSearchInput');
-            const qtyInput = document.getElementById('orderItemQty');
-            const name = nameInput.value.trim();
-            const qty = parseInt(qtyInput.value) || 1;
-
-            if (!name) {
-                alert("Seleccioná o escribí el nombre del ítem antes de sumarlo.");
-                return;
-            }
-
-            const existingIdx = draftOrderItems.findIndex(i => i.name.toLowerCase() === name.toLowerCase());
-            if (existingIdx !== -1) {
-                draftOrderItems[existingIdx].qty += qty;
-            } else {
-                draftOrderItems.push({ name: name, qty: qty, received: false });
-            }
-
-            nameInput.value = '';
-            qtyInput.value = 1;
-            document.getElementById('orderItemSuggestionsDropdown').classList.add('hidden');
-            renderDraftOrderItems();
-        }
-
-        function removeOrderDraftItem(index) {
-            draftOrderItems.splice(index, 1);
-            renderDraftOrderItems();
-        }
-
-        function renderDraftOrderItems() {
-            const container = document.getElementById('draftOrderItemsList');
-            const countBadge = document.getElementById('draftItemsCount');
-            countBadge.innerText = `${draftOrderItems.length} ítem(s)`;
-
-            if (draftOrderItems.length === 0) {
-                container.innerHTML = `<p class="p-3 text-center text-xs text-slate-500">Todavía no sumaste ítems.</p>`;
-                return;
-            }
-
-            container.innerHTML = '';
-            draftOrderItems.forEach((item, index) => {
-                const row = document.createElement('div');
-                row.className = "flex justify-between items-center px-3 py-2 text-xs";
-                row.innerHTML = `
-                    <div class="min-w-0 pr-2">
-                        <span class="text-slate-200 font-semibold block truncate">${item.name}</span>
-                        <span class="text-slate-400">Cantidad pedida: <b class="text-white">${item.qty} u.</b></span>
-                    </div>
-                    <button type="button" onclick="removeOrderDraftItem(${index})" class="text-rose-400 hover:text-rose-300 p-1.5 shrink-0" title="Quitar">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                `;
-                container.appendChild(row);
-            });
-        }
-
-        function saveOrder() {
+        function saveNewOrderHeader() {
             const orderNumber = document.getElementById('orderNumber').value.trim();
             const provider = document.getElementById('orderProvider').value.trim();
+            const expiry = document.getElementById('orderExpiry').value;
 
             if (!orderNumber || !provider) {
                 alert("Completá el N° de Orden y el Proveedor.");
-                return;
-            }
-            if (draftOrderItems.length === 0) {
-                alert("Sumá al menos un ítem a la orden de compra.");
                 return;
             }
 
             const newOrder = {
                 orderNumber: orderNumber,
                 provider: provider,
-                items: draftOrderItems,
+                expiry: expiry || '',
+                items: [],
                 status: 'Pendiente',
                 date: new Date().toLocaleDateString()
             };
@@ -1093,28 +967,96 @@
             closeNewOrderModal();
         }
 
+        function toggleOrderAccordion(orderId) {
+            openOrderAccordions[orderId] = !openOrderAccordions[orderId];
+            updateOrdersUI();
+        }
+
+        function addOrUpdateItemToOrder(orderId) {
+            const nameInput = document.getElementById(`order-item-name-${orderId}`);
+            const qtyInput = document.getElementById(`order-item-qty-${orderId}`);
+            if (!nameInput || !qtyInput) return;
+
+            const name = nameInput.value.trim();
+            const qty = parseInt(qtyInput.value) || 1;
+
+            if (!name) {
+                alert("Escribí o seleccioná un nombre de ítem.");
+                return;
+            }
+
+            const order = ordersMap[orderId];
+            if (!order) return;
+
+            let items = Array.isArray(order.items) ? [...order.items] : [];
+            const existingIdx = items.findIndex(i => i.name.toLowerCase() === name.toLowerCase());
+            
+            if (existingIdx !== -1) {
+                items[existingIdx].qty += qty;
+            } else {
+                items.push({ name: name, qty: qty, received: false });
+            }
+
+            ordersRef.child(orderId).update({ items: items });
+        }
+
+        function removeOrderItem(orderId, itemIndex) {
+            const order = ordersMap[orderId];
+            if (!order || !order.items) return;
+
+            let items = [...order.items];
+            items.splice(itemIndex, 1);
+            ordersRef.child(orderId).update({ items: items });
+        }
+
         function toggleOrderItemReceived(orderId, itemIndex) {
             const order = ordersMap[orderId];
             if (!order || !order.items || !order.items[itemIndex]) return;
 
-            const updatedItems = [...order.items];
-            updatedItems[itemIndex].received = !updatedItems[itemIndex].received;
+            let items = [...order.items];
+            items[itemIndex].received = !items[itemIndex].received;
 
-            const allReceived = updatedItems.every(i => i.received);
+            const allReceived = items.length > 0 && items.every(i => i.received);
             const newStatus = allReceived ? 'Recibida' : 'Pendiente';
 
-            if (ordersRef) {
-                ordersRef.child(orderId).update({
-                    items: updatedItems,
-                    status: newStatus
-                });
-            }
+            ordersRef.child(orderId).update({
+                items: items,
+                status: newStatus
+            });
         }
 
         function deleteOrder(id) {
-            if (confirm('¿Eliminar esta orden de compra?') && ordersRef) {
+            if (confirm('¿Eliminar esta orden de compra completa?') && ordersRef) {
                 ordersRef.child(id).remove();
             }
+        }
+
+        function handleOrderInlineSearch(event, orderId) {
+            const input = event.target;
+            const dropdown = document.getElementById(`order-dropdown-${orderId}`);
+            if (!dropdown) return;
+
+            const query = input.value.trim().toLowerCase();
+            const allNames = getAllStandardNames();
+            const matches = query.length === 0 ? allNames : allNames.filter(n => n.toLowerCase().includes(query));
+
+            if (matches.length === 0) {
+                dropdown.classList.add('hidden');
+                return;
+            }
+
+            dropdown.innerHTML = '';
+            matches.forEach(name => {
+                const div = document.createElement('div');
+                div.className = "px-3 py-2 text-xs text-slate-200 hover:bg-slate-800 hover:text-lab-400 cursor-pointer font-medium transition";
+                div.innerText = name;
+                div.onclick = () => {
+                    input.value = name;
+                    dropdown.classList.add('hidden');
+                };
+                dropdown.appendChild(div);
+            });
+            dropdown.classList.remove('hidden');
         }
 
         function updateOrdersUI() {
@@ -1135,48 +1077,76 @@
                     ? '<span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">Recibida</span>'
                     : '<span class="bg-amber-950 text-amber-400 border border-amber-800 text-[10px] font-bold px-2 py-0.5 rounded">Pendiente</span>';
 
-                let itemsHtml = '';
-                if (Array.isArray(order.items) && order.items.length > 0) {
-                    itemsHtml = '<div class="bg-slate-800/80 rounded-lg border border-slate-700/60 divide-y divide-slate-700/60">';
-                    order.items.forEach((it, idx) => {
-                        const checkedClass = it.received ? 'line-through text-slate-500' : 'text-slate-200';
-                        const iconHtml = it.received 
-                            ? '<i class="fa-solid fa-square-check text-lab-500 text-sm"></i>' 
-                            : '<i class="fa-regular fa-square text-slate-400 text-sm"></i>';
+                const isOpen = openOrderAccordions[order.id] || false;
+                const itemsCount = Array.isArray(order.items) ? order.items.length : 0;
 
-                        itemsHtml += `
-                            <div onclick="toggleOrderItemReceived('${order.id}', ${idx})" class="flex justify-between items-center p-2.5 text-xs cursor-pointer hover:bg-slate-800 transition">
-                                <div class="flex items-center gap-2 min-w-0 pr-2">
-                                    ${iconHtml}
-                                    <span class="${checkedClass} font-medium truncate">${it.name}</span>
+                let itemsHtml = '';
+                if (isOpen) {
+                    let rowsHtml = '';
+                    if (itemsCount > 0) {
+                        order.items.forEach((it, idx) => {
+                            const checkedClass = it.received ? 'line-through text-slate-500' : 'text-slate-200';
+                            const iconHtml = it.received 
+                                ? '<i class="fa-solid fa-square-check text-lab-500 text-base"></i>' 
+                                : '<i class="fa-regular fa-square text-slate-400 text-base"></i>';
+
+                            rowsHtml += `
+                                <div class="flex justify-between items-center py-2 px-2.5 bg-slate-900 rounded-lg border border-slate-700/60 text-xs">
+                                    <div onclick="toggleOrderItemReceived('${order.id}', ${idx})" class="flex items-center gap-2.5 min-w-0 pr-2 cursor-pointer flex-1">
+                                        ${iconHtml}
+                                        <span class="${checkedClass} font-semibold truncate">${it.name}</span>
+                                    </div>
+                                    <div class="flex items-center gap-3 shrink-0">
+                                        <span class="font-mono font-bold text-slate-300">${it.qty} u.</span>
+                                        <button onclick="removeOrderItem('${order.id}', ${idx})" class="text-rose-400 hover:text-rose-300 p-1" title="Quitar ítem"><i class="fa-solid fa-xmark"></i></button>
+                                    </div>
                                 </div>
-                                <span class="font-mono font-bold text-slate-300 shrink-0">${it.qty} u.</span>
+                            `;
+                        });
+                    } else {
+                        rowsHtml = `<p class="text-center text-xs text-slate-500 py-2">No hay insumos cargados en esta orden.</p>`;
+                    }
+
+                    itemsHtml = `
+                        <div class="mt-3 pt-3 border-t border-slate-700/80 space-y-3">
+                            <div class="space-y-2">
+                                <label class="block text-[11px] font-bold text-slate-400 uppercase">Agregar insumo a la OC</label>
+                                <div class="relative">
+                                    <input type="text" id="order-item-name-${order.id}" oninput="handleOrderInlineSearch(event, '${order.id}')" placeholder="Buscar reactivo o insumo..." class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 h-9 text-xs text-slate-100 focus:outline-none focus:border-lab-500">
+                                    <div id="order-dropdown-${order.id}" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-950 border border-slate-700 rounded-lg shadow-2xl max-h-36 overflow-y-auto z-50 divide-y divide-slate-800"></div>
+                                </div>
+                                <div class="flex gap-2">
+                                    <input type="number" id="order-item-qty-${order.id}" min="1" value="1" placeholder="Cant." class="w-20 bg-slate-900 border border-slate-700 rounded-lg px-3 h-9 text-xs text-center font-bold text-slate-100 focus:outline-none focus:border-lab-500">
+                                    <button onclick="addOrUpdateItemToOrder('${order.id}')" class="flex-1 bg-sky-600 hover:bg-sky-700 text-white h-9 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 shadow">
+                                        <i class="fa-solid fa-plus"></i> Sumar Insumo
+                                    </button>
+                                </div>
                             </div>
-                        `;
-                    });
-                    itemsHtml += '</div>';
-                } else if (order.itemsDesc) {
-                    itemsHtml = `<p class="text-xs text-slate-300 bg-slate-800/80 p-2 rounded border border-slate-700/50">${order.itemsDesc}</p>`;
+                            <div class="space-y-1.5 max-h-40 overflow-y-auto">
+                                ${rowsHtml}
+                            </div>
+                        </div>
+                    `;
                 }
 
                 const card = document.createElement('div');
-                card.className = "bg-slate-900 border border-slate-700/80 rounded-xl p-3.5 space-y-2.5 shadow-sm";
+                card.className = "bg-slate-800 border border-slate-700/80 rounded-xl p-4 space-y-2 shadow-sm transition";
                 card.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <span class="text-xs font-mono text-lab-400 font-bold">${order.orderNumber}</span>
+                    <div class="flex justify-between items-start cursor-pointer" onclick="toggleOrderAccordion('${order.id}')">
+                        <div class="space-y-0.5">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-mono text-lab-400 font-bold">${order.orderNumber}</span>
+                                ${statusBadge}
+                            </div>
                             <h4 class="text-sm font-bold text-white">${order.provider}</h4>
+                            <p class="text-[11px] text-slate-400">Vto: ${order.expiry || 'No especificado'} | Ítems: ${itemsCount}</p>
                         </div>
                         <div class="flex items-center gap-2">
-                            ${statusBadge}
-                            <button onclick="deleteOrder('${order.id}')" class="text-rose-400 hover:text-rose-300 text-xs p-1" title="Eliminar OC"><i class="fa-solid fa-trash"></i></button>
+                            <button onclick="event.stopPropagation(); deleteOrder('${order.id}')" class="text-rose-400 hover:text-rose-300 text-xs p-1" title="Eliminar OC"><i class="fa-solid fa-trash"></i></button>
+                            <i class="fa-solid fa-chevron-${isOpen ? 'up' : 'down'} text-xs text-slate-400 p-1"></i>
                         </div>
                     </div>
                     ${itemsHtml}
-                    <div class="flex justify-between items-center pt-0.5 text-[11px] text-slate-400">
-                        <span>Creada: ${order.date || 'Reciente'}</span>
-                        <span>Tocá cada ítem para marcar recibido</span>
-                    </div>
                 `;
                 container.appendChild(card);
             });
