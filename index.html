@@ -81,7 +81,7 @@
     <img src="caja_png_transparente.png" alt="Logo" class="w-full h-full object-contain">
             </div>
             <div class="space-y-1">
-                <h2 class="text-lg font-bold text-white">LudovicApp Seguro</h2>
+                <h2 class="text-lg font-bold text-white">LudovicApp</h2>
                 <p class="text-xs text-slate-400">Ingresá la clave de acceso para desbloquear el inventario.</p>
             </div>
             <div class="space-y-2 text-left">
@@ -503,7 +503,7 @@
 
             firebase.database().ref('config/clave_maestra').once('value').then((snapshot) => {
                 const cloudKey = snapshot.val();
-                const masterKey = cloudKey || "ludovic2026";
+                const masterKey = cloudKey || "inmuno";
 
                 if (inputVal === masterKey) {
                     document.getElementById('authScreen').classList.add('hidden');
