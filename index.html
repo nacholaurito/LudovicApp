@@ -128,7 +128,7 @@
         </div>
     </header>
 
-    <!-- CONTENEDOR PRINCIPAL FLUIDO (MAX-W-6XL) -->
+    <!-- CONTENEDOR PRINCIPAL FLUIDO -->
     <main class="max-w-6xl mx-auto p-4 md:p-6 space-y-6">
         <!-- 1. PESTAÑA INVENTARIO -->
         <section id="tab-inventory" class="tab-content space-y-5">
@@ -247,7 +247,7 @@
             </div>
         </section>
 
-        <!-- 3. PESTAÑA ÓRDENES DE COMPRA (DISEÑO LIMPIO Y PROFESIONAL) -->
+        <!-- 3. PESTAÑA ÓRDENES DE COMPRA -->
         <section id="tab-orders" class="tab-content hidden space-y-5">
             <!-- CABECERA DE SECCIÓN -->
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-lg gap-3">
@@ -999,10 +999,12 @@
             if (existingIdx !== -1) {
                 items[existingIdx].qty += qty;
             } else {
-                items.push({ name: name, qty: qty, received: false });
+                items.push({ name: name, qty: qty });
             }
 
             ordersRef.child(orderId).update({ items: items });
+            nameInput.value = '';
+            qtyInput.value = '1';
         }
 
         function removeOrderItem(orderId, itemIndex) {
@@ -1014,19 +1016,35 @@
             ordersRef.child(orderId).update({ items: items });
         }
 
-        function toggleOrderItemReceived(orderId, itemIndex) {
-            const order = ordersMap[orderId];
-            if (!order || !order.items || !order.items[itemIndex]) return;
+        // --- AUTOMATIZACIÓN: DESCONTAR DE OC AL AGREGAR STOCK ---
+        function deductFromActiveOrders(itemName, addedQty) {
+            let remainingToAdd = addedQty;
+            ordersArray.forEach(order => {
+                if (order.status !== 'Recibida' && Array.isArray(order.items)) {
+                    let itemsUpdated = false;
+                    let items = order.items.map(it => {
+                        if (remainingToAdd > 0 && it.name.toLowerCase() === itemName.toLowerCase()) {
+                            itemsUpdated = true;
+                            if (remainingToAdd >= it.qty) {
+                                remainingToAdd -= it.qty;
+                                return null; // Eliminar ítem completo de la OC
+                            } else {
+                                let desc = remainingToAdd;
+                                remainingToAdd = 0;
+                                return { ...it, qty: it.qty - desc };
+                            }
+                        }
+                        return it;
+                    }).filter(it => it !== null);
 
-            let items = [...order.items];
-            items[itemIndex].received = !items[itemIndex].received;
-
-            const allReceived = items.length > 0 && items.every(i => i.received);
-            const newStatus = allReceived ? 'Recibida' : 'Pendiente';
-
-            ordersRef.child(orderId).update({
-                items: items,
-                status: newStatus
+                    if (itemsUpdated) {
+                        const newStatus = items.length === 0 ? 'Recibida' : 'Pendiente';
+                        ordersRef.child(order.id).update({
+                            items: items,
+                            status: newStatus
+                        });
+                    }
+                }
             });
         }
 
@@ -1090,38 +1108,33 @@
                     let rowsHtml = '';
                     if (itemsCount > 0) {
                         order.items.forEach((it, idx) => {
-                            const checkedClass = it.received ? 'line-through text-slate-500' : 'text-slate-200';
-                            const iconHtml = it.received 
-                                ? '<i class="fa-solid fa-square-check text-lab-500 text-base"></i>' 
-                                : '<i class="fa-regular fa-square text-slate-400 text-base"></i>';
-
                             rowsHtml += `
-                                <div class="flex justify-between items-center py-2.5 px-4 bg-slate-950 rounded-xl border border-slate-700/60 text-xs">
-                                    <div onclick="toggleOrderItemReceived('${order.id}', ${idx})" class="flex items-center gap-3 min-w-0 pr-2 cursor-pointer flex-1">
-                                        ${iconHtml}
-                                        <span class="${checkedClass} font-semibold truncate">${it.name}</span>
+                                <div class="flex justify-between items-center py-2.5 px-4 bg-slate-950 rounded-xl border border-slate-700/60 text-xs gap-3">
+                                    <div class="flex items-center gap-3 min-w-0 flex-1">
+                                        <span class="text-slate-200 font-semibold truncate">${it.name}</span>
                                     </div>
-                                    <div class="flex items-center gap-4 shrink-0">
-                                        <span class="font-mono font-bold text-slate-300">${it.qty} u.</span>
-                                        <button onclick="removeOrderItem('${order.id}', ${idx})" class="text-rose-400 hover:text-rose-300 p-1" title="Quitar ítem"><i class="fa-solid fa-xmark text-sm"></i></button>
+                                    <div class="flex items-center gap-3 shrink-0">
+                                        <span class="font-mono font-bold text-lab-400 bg-lab-950/60 border border-lab-800/60 px-2.5 py-1 rounded-lg">${it.qty} u. pendientes</span>
+                                        <button onclick="removeOrderItem('${order.id}', ${idx})" class="text-rose-400 hover:text-rose-300 p-1.5" title="Quitar ítem"><i class="fa-solid fa-xmark text-sm"></i></button>
                                     </div>
                                 </div>
                             `;
                         });
                     } else {
-                        rowsHtml = `<p class="text-center text-xs text-slate-500 py-4">No hay insumos cargados en esta orden.</p>`;
+                        rowsHtml = `<p class="text-center text-xs text-slate-500 py-4">No hay insumos pendientes en esta orden.</p>`;
                     }
 
                     itemsHtml = `
                         <div class="mt-4 pt-4 border-t border-slate-700 space-y-4">
                             <div class="space-y-2">
                                 <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">Agregar insumo a la OC</label>
-                                <div class="relative">
-                                    <input type="text" id="order-item-name-${order.id}" oninput="handleOrderInlineSearch(event, '${order.id}')" placeholder="Buscar reactivo o insumo..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 h-11 text-xs text-slate-100 focus:outline-none focus:border-lab-500">
-                                    <div id="order-dropdown-${order.id}" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-950 border border-slate-700 rounded-xl shadow-2xl max-h-40 overflow-y-auto z-50 divide-y divide-slate-800"></div>
-                                </div>
-                                <div class="flex flex-col sm:flex-row gap-2.5">
-                                    <input type="number" id="order-item-qty-${order.id}" min="1" value="1" placeholder="Cant." class="w-full sm:w-28 bg-slate-950 border border-slate-700 rounded-xl px-4 h-11 text-xs text-center font-bold text-slate-100 focus:outline-none focus:border-lab-500">
+                                <!-- TRES ELEMENTOS EN EL MISMO RENGLÓN EXACTO -->
+                                <div class="flex gap-2.5 items-center">
+                                    <div class="relative flex-1">
+                                        <input type="text" id="order-item-name-${order.id}" oninput="handleOrderInlineSearch(event, '${order.id}')" placeholder="Buscar reactivo o insumo..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 h-11 text-xs text-slate-100 focus:outline-none focus:border-lab-500">
+                                        <div id="order-dropdown-${order.id}" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-950 border border-slate-700 rounded-xl shadow-2xl max-h-40 overflow-y-auto z-50 divide-y divide-slate-800"></div>
+                                    </div>
+                                    <input type="number" id="order-item-qty-${order.id}" min="1" value="1" placeholder="Cant." class="w-24 bg-slate-950 border border-slate-700 rounded-xl px-3 h-11 text-xs text-center font-bold text-slate-100 focus:outline-none focus:border-lab-500 shrink-0">
                                     <button onclick="addOrUpdateItemToOrder('${order.id}')" class="bg-sky-600 hover:bg-sky-700 text-white px-5 h-11 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 shadow transition shrink-0">
                                         <i class="fa-solid fa-plus"></i> Sumar Insumo
                                     </button>
@@ -1144,7 +1157,7 @@
                                 ${statusBadge}
                             </div>
                             <h4 class="text-base font-bold text-white">${order.provider}</h4>
-                            <p class="text-xs text-slate-400">Vto: ${order.expiry || 'No especificado'} &bull; Ítems: ${itemsCount}</p>
+                            <p class="text-xs text-slate-400">Vto: ${order.expiry || 'No especificado'} &bull; Ítems pendientes: ${itemsCount}</p>
                         </div>
                         <div class="flex items-center gap-2">
                             <button onclick="event.stopPropagation(); deleteOrder('${order.id}')" class="text-rose-400 hover:text-rose-300 text-sm p-2 transition" title="Eliminar OC"><i class="fa-solid fa-trash"></i></button>
@@ -1309,6 +1322,12 @@
             if (dbRef) {
                 dbRef.child(id).update({ stock: newStock });
                 const modeUsed = customMode || (amount > 0 ? 'add' : 'deduct');
+                
+                // Si sumamos stock manualmente desde el inventario, también descontamos de la OC automáticamente
+                if (amount > 0) {
+                    deductFromActiveOrders(item.name, amount);
+                }
+
                 const actionText = amount > 0 ? `+${amount} u. en ${item.name} (Lote: ${item.batch})` : `${amount} u. en ${item.name} (Lote: ${item.batch})`;
                 showToast(actionText, modeUsed);
             }
@@ -1476,18 +1495,27 @@
         function saveItem(event) {
             event.preventDefault();
             const key = document.getElementById('editKey').value;
+            const name = document.getElementById('itemName').value;
+            const stock = parseInt(document.getElementById('itemStock').value);
+
             const newItem = {
                 code: document.getElementById('itemCode').value,
-                name: document.getElementById('itemName').value,
+                name: name,
                 type: document.getElementById('itemType').value,
                 section: document.getElementById('itemSection').value,
-                stock: parseInt(document.getElementById('itemStock').value),
+                stock: stock,
                 batch: document.getElementById('itemBatch').value,
                 expiry: document.getElementById('itemExpiry').value
             };
+
             if (dbRef) {
-                if (key === "") dbRef.push(newItem);
-                else dbRef.child(key).set(newItem);
+                if (key === "") {
+                    dbRef.push(newItem);
+                    // Automatización: Descontar de las OC al crear un nuevo ítem en stock
+                    deductFromActiveOrders(name, stock);
+                } else {
+                    dbRef.child(key).set(newItem);
+                }
             }
             closeNewItemModal();
         }
