@@ -148,22 +148,21 @@
                 </div>
             </div>
 
+            <!-- FILTROS EN UNA MISMA LÍNEA (VERSIÓN WEB OPTIMIZADA) -->
             <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-lg space-y-3.5">
-                <div class="flex flex-col sm:flex-row gap-3">
+                <div class="flex flex-col md:flex-row gap-3">
                     <div class="relative flex-1">
                         <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-sm"></i>
                         <input type="text" id="searchInput" oninput="filterInventory()" placeholder="Buscar reactivo, código o lote..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-11 pr-4 h-11 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-lab-500">
                     </div>
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <select id="typeFilter" onchange="filterInventory()" class="bg-slate-900 border border-slate-700 rounded-xl px-4 h-11 text-sm text-slate-200 focus:outline-none focus:border-lab-500">
+                    <select id="typeFilter" onchange="filterInventory()" class="bg-slate-900 border border-slate-700 rounded-xl px-4 h-11 text-sm text-slate-200 focus:outline-none focus:border-lab-500 md:w-56 shrink-0">
                         <option value="">Todos los tipos</option>
                         <option value="Reactivo">Reactivo</option>
                         <option value="Calibrador">Calibrador</option>
                         <option value="Control">Control</option>
                         <option value="Consumible">Consumible</option>
                     </select>
-                    <select id="sectionFilter" onchange="filterInventory()" class="bg-slate-900 border border-slate-700 rounded-xl px-4 h-11 text-sm text-slate-200 focus:outline-none focus:border-lab-500">
+                    <select id="sectionFilter" onchange="filterInventory()" class="bg-slate-900 border border-slate-700 rounded-xl px-4 h-11 text-sm text-slate-200 focus:outline-none focus:border-lab-500 md:w-56 shrink-0">
                         <option value="">Todas las secciones</option>
                         <option value="Química">Química Clínica</option>
                         <option value="Hematología">Hematología</option>
@@ -225,15 +224,14 @@
                             <i class="fa-solid fa-bolt"></i>
                         </button>
                     </div>
-                    <!-- Selector de cámaras oculto si no hay varios dispositivos para evitar texto molesto -->
                     <select id="select-camera" onchange="appScanner.onCameraSelectChanged(event)" class="w-full bg-slate-900 border border-slate-700 text-slate-300 text-xs rounded-xl px-3 h-10 focus:outline-none focus:border-lab-500 hidden">
                         <option value="">Buscando cámaras...</option>
                     </select>
                 </div>
 
-                <!-- ÚNICO BOTÓN DE ENTRADA MANUAL -->
+                <!-- BOTÓN DE ENTRADA MANUAL QUE ABRE EL MODAL DE NUEVO ÍTEM -->
                 <div class="pt-3 border-t border-slate-700">
-                    <button onclick="openManualInputModal()" class="w-full bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow transition">
+                    <button onclick="openNewItemModal()" class="w-full bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow transition">
                         <i class="fa-solid fa-keyboard text-lab-500"></i> Ingresar manualmente
                     </button>
                 </div>
@@ -301,7 +299,7 @@
                 <p class="text-xs text-slate-400">Agregá los nombres oficiales para mantener la homogeneidad.</p>
                 
                 <div class="flex gap-2">
-                    <input type="text" id="newCatalogName" placeholder="Ej: Architect rHTLV-I/II" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                    <input type="text" id="newCatalogName" placeholder="Ej: Architect rHTLV-I/II" onkeypress="if(event.key==='Enter') addCatalogName()" class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
                     <button onclick="addCatalogName()" class="bg-lab-600 hover:bg-lab-700 text-white px-4 h-10 rounded-xl text-xs font-semibold shadow flex items-center gap-1 shrink-0 transition">
                         <i class="fa-solid fa-plus"></i> Agregar
                     </button>
@@ -338,23 +336,6 @@
         </button>
     </nav>
 
-    <!-- MODAL DE ENTRADA MANUAL -->
-    <div id="manualInputModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-50 p-3">
-        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4">
-            <div class="flex justify-between items-center">
-                <h3 class="text-base font-bold text-white">Ingresar Código o Lote</h3>
-                <button onclick="closeManualInputModal()" class="text-slate-400 hover:text-white p-1"><i class="fa-solid fa-xmark text-xl"></i></button>
-            </div>
-            <div class="space-y-3">
-                <input type="text" id="manualScanInput" onkeypress="handleManualScanKeyModal(event)" placeholder="Escribí código o lote..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-11 text-sm text-slate-100 focus:outline-none focus:border-lab-500 mono">
-                <div class="flex gap-2">
-                    <button type="button" onclick="closeManualInputModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-xl text-sm font-semibold transition">Cancelar</button>
-                    <button type="button" onclick="processModalManualInput()" class="flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-xl text-sm font-semibold shadow transition">Procesar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- MODAL NUEVA ORDEN DE COMPRA -->
     <div id="orderModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-50 p-3">
         <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 max-w-sm w-full shadow-2xl space-y-4">
@@ -374,7 +355,7 @@
                 </div>
                 <div class="space-y-1">
                     <label class="block text-xs font-medium text-slate-400">Vencimiento estimado</label>
-                    <input type="date" id="orderExpiry" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                    <input type="date" id="orderExpiry" onkeypress="if(event.key==='Enter') saveNewOrderHeader()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
                 </div>
 
                 <div class="flex gap-2 pt-2">
@@ -395,7 +376,7 @@
             <div id="scanModalBody" class="space-y-1.5 text-xs text-slate-300 bg-slate-900 p-4 rounded-xl border border-slate-700"></div>
             <div id="qtyContainer" class="space-y-1">
                 <label id="qtyLabel" class="block text-xs font-medium text-slate-400">Cantidad a agregar</label>
-                <input type="number" id="scanModalQty" min="1" value="1" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-11 text-lg font-bold text-center text-slate-100 focus:outline-none focus:border-lab-500">
+                <input type="number" id="scanModalQty" min="1" value="1" onkeypress="if(event.key==='Enter') executeScanAction()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-11 text-lg font-bold text-center text-slate-100 focus:outline-none focus:border-lab-500">
             </div>
             <div class="flex gap-2 pt-1">
                 <button type="button" onclick="closeScanActionModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-xl text-sm font-semibold transition">Cancelar</button>
@@ -428,7 +409,7 @@
                 <div class="relative space-y-1" id="nameComboboxContainer">
                     <label class="block text-xs font-medium text-slate-400">Nombre del Reactivo</label>
                     <div class="relative">
-                        <input type="text" id="itemName" required autocomplete="off" oninput="handleNameSearchInput(event)" onfocus="handleNameSearchInput(event)" placeholder="Escribí para buscar..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-3.5 pr-8 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                        <input type="text" id="itemName" required autocomplete="off" oninput="handleNameSearchInput(event)" onfocus="handleNameSearchInput(event)" onkeydown="handleNameKeyNavigation(event)" placeholder="Escribí para buscar..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-3.5 pr-8 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
                         <i class="fa-solid fa-chevron-down absolute right-3.5 top-3.5 text-xs text-slate-500 pointer-events-none"></i>
                     </div>
                     <div id="nameSuggestionsDropdown" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-h-40 overflow-y-auto z-50 divide-y divide-slate-800"></div>
@@ -499,6 +480,7 @@
         let activeScanItem = null;
         let activeScanParsed = null;
         let appScanner = null;
+        let selectedDropdownIndex = -1;
 
         const firebaseConfig = {
             databaseURL: "https://labstock-80756-default-rtdb.firebaseio.com",
@@ -895,6 +877,11 @@
         }
 
         function handleNameSearchInput(event) {
+            selectedDropdownIndex = -1;
+            renderSuggestions();
+        }
+
+        function renderSuggestions() {
             const input = document.getElementById('itemName');
             const dropdown = document.getElementById('nameSuggestionsDropdown');
             const query = input.value.trim().toLowerCase();
@@ -907,9 +894,10 @@
                 return;
             }
             dropdown.innerHTML = '';
-            matches.forEach(name => {
+            matches.forEach((name, idx) => {
                 const itemDiv = document.createElement('div');
-                itemDiv.className = "px-3.5 py-2.5 text-xs text-slate-200 hover:bg-slate-800 hover:text-lab-400 cursor-pointer font-medium transition";
+                const isSelected = idx === selectedDropdownIndex;
+                itemDiv.className = `px-3.5 py-2.5 text-xs cursor-pointer font-medium transition ${isSelected ? 'bg-lab-600 text-white' : 'text-slate-200 hover:bg-slate-800 hover:text-lab-400'}`;
                 itemDiv.innerText = name;
                 itemDiv.onclick = () => {
                     document.getElementById('itemName').value = name;
@@ -918,6 +906,39 @@
                 dropdown.appendChild(itemDiv);
             });
             dropdown.classList.remove('hidden');
+        }
+
+        function handleNameKeyNavigation(event) {
+            const dropdown = document.getElementById('nameSuggestionsDropdown');
+            if (dropdown.classList.contains('hidden')) return;
+            const items = dropdown.children;
+            if (items.length === 0) return;
+
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                selectedDropdownIndex = (selectedDropdownIndex + 1) % items.length;
+                updateDropdownSelection(items);
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                selectedDropdownIndex = (selectedDropdownIndex - 1 + items.length) % items.length;
+                updateDropdownSelection(items);
+            } else if (event.key === 'Enter') {
+                if (selectedDropdownIndex >= 0 && selectedDropdownIndex < items.length) {
+                    event.preventDefault();
+                    items[selectedDropdownIndex].click();
+                }
+            }
+        }
+
+        function updateDropdownSelection(items) {
+            for (let i = 0; i < items.length; i++) {
+                if (i === selectedDropdownIndex) {
+                    items[i].className = "px-3.5 py-2.5 text-xs cursor-pointer font-medium transition bg-lab-600 text-white";
+                    items[i].scrollIntoView({ block: 'nearest' });
+                } else {
+                    items[i].className = "px-3.5 py-2.5 text-xs cursor-pointer font-medium transition text-slate-200 hover:bg-slate-800 hover:text-lab-400";
+                }
+            }
         }
 
         function closeAllDropdownsOutside(event) {
@@ -1356,75 +1377,6 @@
 
         function deleteItemCloud(id) {
             if (confirm('¿Eliminar este lote?') && dbRef) dbRef.child(id).remove();
-        }
-
-        // --- PARSER DE DATAMATRIX GS1 INDUSTRIAL ---
-        function parseSmartQR(rawData) {
-            if (!rawData) return { code: '', batch: '', expiry: '' };
-            let code = '', batch = '', expiry = '';
-            let clean = rawData.trim().replace(/[\x1d\u001d\u0000-\u001f]/g, '|');
-
-            if (clean.includes('(')) {
-                const matches = [...clean.matchAll(/\((\d+)\)([^\(\)]+)/g)];
-                for (const match of matches) {
-                    const ai = match[1], val = match[2].trim();
-                    if (ai === '01') code = val;
-                    else if (ai === '17') {
-                        let yy = '20' + val.substring(0, 2), mm = val.substring(2, 4), dd = val.substring(4, 6);
-                        if (dd === '00' || dd > '31') dd = '01';
-                        expiry = `${yy}-${mm}-${dd}`;
-                    } else if (ai === '10') batch = val.split(' ')[0];
-                }
-            }
-
-            if (!code || !batch || !expiry) {
-                let raw = clean.replace(/[()\\]/g, ''), i = 0;
-                while (i < raw.length) {
-                    if (raw.startsWith('01', i) && i + 16 <= raw.length) {
-                        code = raw.substring(i + 2, i + 16); i += 16;
-                    } else if (raw.startsWith('17', i) && i + 8 <= raw.length) {
-                        let dateStr = raw.substring(i + 2, i + 8);
-                        if (/^\d{6}$/.test(dateStr)) {
-                            let yy = '20' + dateStr.substring(0, 2), mm = dateStr.substring(2, 4), dd = dateStr.substring(4, 6);
-                            if (dd === '00' || dd > '31') dd = '01';
-                            expiry = `${yy}-${mm}-${dd}`;
-                        }
-                        i += 8;
-                    } else if (raw.startsWith('10', i)) {
-                        i += 2; let sub = raw.substring(i), endIdx = raw.length;
-                        let sepIdx = sub.indexOf('|');
-                        if (sepIdx !== -1) endIdx = i + sepIdx;
-                        batch = raw.substring(i, endIdx).trim(); i = endIdx;
-                        if (raw[i] === '|') i++;
-                    } else i++;
-                }
-            }
-            return { code: code.trim(), batch: batch.trim(), expiry: expiry.trim() };
-        }
-
-        function openManualInputModal() {
-            document.getElementById('manualScanInput').value = '';
-            document.getElementById('manualInputModal').classList.remove('hidden');
-            document.getElementById('manualInputModal').classList.add('flex');
-            setTimeout(() => document.getElementById('manualScanInput').focus(), 100);
-        }
-
-        function closeManualInputModal() {
-            document.getElementById('manualInputModal').classList.add('hidden');
-            document.getElementById('manualInputModal').classList.remove('flex');
-        }
-
-        function handleManualScanKeyModal(event) {
-            if (event.key === 'Enter') {
-                processModalManualInput();
-            }
-        }
-
-        function processModalManualInput() {
-            const val = document.getElementById('manualScanInput').value.trim();
-            if (!val) return;
-            closeManualInputModal();
-            processScannedCode(val);
         }
 
         function processScannedCode(rawData) {
