@@ -59,7 +59,7 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen pb-24 md:pb-12 font-sans antialiased selection:bg-lab-500 selection:text-white" onclick="closeAllDropdownsOutside(event)">
 
-    <!-- NOTIFICACIÓN FLOTANTE (TOAST) PERFECTAMENTE CENTRADA -->
+    <!-- NOTIFICACIÓN FLOTANTE (TOAST) -->
     <div id="toastNotification" class="fixed top-20 inset-x-4 mx-auto z-[100] hidden items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border backdrop-blur-md max-w-sm text-sm toast-animate">
         <div id="toastIconContainer" class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-white"></div>
         <div class="min-w-0">
@@ -68,7 +68,7 @@
         </div>
     </div>
 
-    <!-- PANTALLA DE BLOQUEO (VALIDA CONTRA FIREBASE) -->
+    <!-- PANTALLA DE BLOQUEO -->
     <div id="authScreen" class="fixed inset-0 bg-slate-950 z-[100] flex items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-700/80 rounded-2xl p-8 max-w-sm w-full text-center space-y-5 shadow-2xl">
             <div class="w-14 h-14 bg-lab-500/10 text-lab-500 rounded-2xl mx-auto flex items-center justify-center text-2xl border border-lab-500/20 shadow-inner">
@@ -88,10 +88,9 @@
         </div>
     </div>
 
-    <!-- HEADER / BARRA SUPERIOR OPTIMIZADA PARA PC Y MÓVIL -->
+    <!-- HEADER / BARRA SUPERIOR -->
     <header class="bg-slate-800/95 backdrop-blur-md border-b border-slate-700/80 sticky top-0 z-40 shadow-md">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-            <!-- LOGO Y TÍTULO -->
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
             <div class="flex items-center space-x-3 min-w-0 shrink-0">
                 <div class="bg-slate-900 border border-slate-700/80 p-1.5 rounded-xl shadow-inner flex items-center justify-center shrink-0 w-10 h-10">
                     <img src="caja_png_transparente.png" alt="Logo" class="w-7 h-7 object-contain">
@@ -102,7 +101,6 @@
                 </div>
             </div>
 
-            <!-- NAVEGACIÓN DESKTOP CENTRADA -->
             <nav class="hidden md:flex items-center space-x-1 bg-slate-900/80 p-1 rounded-xl border border-slate-700/80 shadow-inner">
                 <button onclick="switchTab('inventory')" id="pc-btn-inventory" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-lab-400 bg-slate-800 shadow transition flex items-center gap-1.5">
                     <i class="fa-solid fa-boxes-stacked"></i> Inventario
@@ -121,7 +119,6 @@
                 </button>
             </nav>
 
-            <!-- ESTADO DE NUBE -->
             <div class="flex items-center justify-end shrink-0">
                 <div id="cloudStatus" class="flex items-center space-x-2 text-xs bg-slate-900/80 border border-slate-700/80 px-3 py-1.5 rounded-full text-slate-300 shadow-inner">
                     <span id="statusIndicator" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
@@ -131,8 +128,8 @@
         </div>
     </header>
 
-    <!-- CONTENEDOR PRINCIPAL AMPLIO Y ORDENADO -->
-    <main class="max-w-4xl mx-auto p-4 md:p-6 space-y-5">
+    <!-- CONTENEDOR PRINCIPAL AMPLIO (MAX-W-5XL PARA APROVECHAR LA PANTALLA) -->
+    <main class="max-w-5xl mx-auto p-4 md:p-6 space-y-5">
         <!-- 1. PESTAÑA INVENTARIO -->
         <section id="tab-inventory" class="tab-content space-y-4">
             <div class="grid grid-cols-3 gap-3">
@@ -250,10 +247,10 @@
             </div>
         </section>
 
-        <!-- 3. PESTAÑA ÓRDENES DE COMPRA -->
+        <!-- 3. PESTAÑA ÓRDENES DE COMPRA (AHORA OCUPA TODO EL ANCHO ÚTIL DE LA PANTALLA) -->
         <section id="tab-orders" class="tab-content hidden space-y-4">
-            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700/85 shadow-lg space-y-5">
-                <div class="flex justify-between items-center pb-2 border-b border-slate-700/60">
+            <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700/85 shadow-lg space-y-5">
+                <div class="flex justify-between items-center pb-3 border-b border-slate-700/60">
                     <div>
                         <h2 class="text-base font-bold flex items-center gap-2 text-white">
                             <i class="fa-solid fa-file-invoice-dollar text-lab-500"></i> Órdenes de Compra
@@ -342,7 +339,7 @@
         </button>
     </nav>
 
-    <!-- MODAL NUEVA ORDEN DE COMPRA (CREAR CABECERA) -->
+    <!-- MODAL NUEVA ORDEN DE COMPRA -->
     <div id="orderModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm hidden items-center justify-center z-50 p-3">
         <div class="bg-slate-800 border border-slate-700/80 rounded-2xl p-5 max-w-sm w-full shadow-2xl space-y-4">
             <div class="flex justify-between items-center">
@@ -748,7 +745,7 @@
 
                     this.isScanning = true;
                     this.btnToggleText.innerText = "Detener Cámara";
-                    this.btnToggle.className = "flex-1 bg-rose-600 hover:bg-rose-700 text-white h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow transition";
+                    this.btnToggle.className = "flex-1 bg-rose-600 hover:bg-rose-700 text-white h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 shadow transition";
                     this.checkTorchAvailability();
                 } catch (err) {
                     console.error("Error al arrancar escáner:", err);
@@ -768,7 +765,7 @@
                 this.videoPlaceholder.classList.remove('hidden');
                 this.reticle.classList.add('hidden');
                 this.btnToggleText.innerText = "Activar Cámara";
-                this.btnToggle.className = "flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow transition";
+                this.btnToggle.className = "flex-1 bg-lab-600 hover:bg-lab-700 text-white h-11 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 shadow transition";
                 this.btnTorch.disabled = true;
             }
 
