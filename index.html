@@ -148,7 +148,6 @@
                 </div>
             </div>
 
-            <!-- BUSCADOR Y DESPLEGABLES EN UNA MISMA LÍNEA EN VERSIÓN WEB -->
             <div class="bg-slate-800 p-5 rounded-2xl border border-slate-700 shadow-lg flex flex-col md:flex-row gap-3 items-center">
                 <div class="relative flex-1 w-full">
                     <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-sm"></i>
@@ -228,7 +227,7 @@
                     </select>
                 </div>
 
-                <!-- BOTÓN DE ENTRADA MANUAL QUE ABRE EL MODAL COMPLETO DE NUEVO ÍTEM -->
+                <!-- ÚNICO BOTÓN DE ENTRADA MANUAL -->
                 <div class="pt-3 border-t border-slate-700">
                     <button onclick="openNewItemModal()" class="w-full bg-slate-700 hover:bg-slate-600 text-white h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow transition">
                         <i class="fa-solid fa-keyboard text-lab-500"></i> Ingresar manualmente
@@ -479,6 +478,7 @@
         let activeScanItem = null;
         let activeScanParsed = null;
         let appScanner = null;
+        let orderDropdownSelectedIndex = {};
 
         const firebaseConfig = {
             databaseURL: "https://labstock-80756-default-rtdb.firebaseio.com",
@@ -905,6 +905,14 @@
             if (nameContainer && !nameContainer.contains(event.target)) {
                 document.getElementById('nameSuggestionsDropdown').classList.add('hidden');
             }
+            // Cerrar también los desplegables de órdenes abiertos al hacer clic fuera
+            document.querySelectorAll('[id^="order-dropdown-"]').forEach(drop => {
+                const orderId = drop.id.replace('order-dropdown-', '');
+                const input = document.getElementById(`order-item-name-${orderId}`);
+                if (input && !input.contains(event.target) && !drop.contains(event.target)) {
+                    drop.classList.add('hidden');
+                }
+            });
         }
 
         function addCatalogName() {
@@ -1007,6 +1015,8 @@
             ordersRef.child(orderId).update({ items: items });
             nameInput.value = '';
             qtyInput.value = '1';
+            const dropdown = document.getElementById(`order-dropdown-${orderId}`);
+            if (dropdown) dropdown.classList.add('hidden');
         }
 
         function removeOrderItem(orderId, itemIndex) {
@@ -1061,6 +1071,10 @@
             const dropdown = document.getElementById(`order-dropdown-${orderId}`);
             if (!dropdown) return;
 
+            if (!orderDropdownSelectedIndex[orderId]) {
+                orderDropdownSelectedIndex[orderId] = -1;
+            }
+
             const query = input.value.trim().toLowerCase();
             const allNames = getAllStandardNames();
             const matches = query.length === 0 ? allNames : allNames.filter(n => n.toLowerCase().includes(query));
@@ -1071,17 +1085,68 @@
             }
 
             dropdown.innerHTML = '';
-            matches.forEach(name => {
+            matches.forEach((name, idx) => {
                 const div = document.createElement('div');
                 div.className = "px-3.5 py-2.5 text-xs text-slate-200 hover:bg-slate-800 hover:text-lab-400 cursor-pointer font-medium transition";
                 div.innerText = name;
                 div.onclick = () => {
                     input.value = name;
                     dropdown.classList.add('hidden');
+                    orderDropdownSelectedIndex[orderId] = -1;
                 };
                 dropdown.appendChild(div);
             });
             dropdown.classList.remove('hidden');
+        }
+
+        function handleOrderInlineKeydown(event, orderId) {
+            const dropdown = document.getElementById(`order-dropdown-${orderId}`);
+            const input = event.target;
+            if (!dropdown || dropdown.classList.contains('hidden')) {
+                if (event.key === 'Enter') {
+                    addOrUpdateItemToOrder(orderId);
+                }
+                return;
+            }
+
+            const items = dropdown.querySelectorAll('div');
+            if (items.length === 0) return;
+
+            if (orderDropdownSelectedIndex[orderId] === undefined) {
+                orderDropdownSelectedIndex[orderId] = -1;
+            }
+
+            if (event.key === 'ArrowDown') {
+                event.preventDefault();
+                orderDropdownSelectedIndex[orderId] = (orderDropdownSelectedIndex[orderId] + 1) % items.length;
+                updateOrderDropdownHighlight(items, orderDropdownSelectedIndex[orderId]);
+            } else if (event.key === 'ArrowUp') {
+                event.preventDefault();
+                orderDropdownSelectedIndex[orderId] = (orderDropdownSelectedIndex[orderId] - 1 + items.length) % items.length;
+                updateOrderDropdownHighlight(items, orderDropdownSelectedIndex[orderId]);
+            } else if (event.key === 'Enter') {
+                event.preventDefault();
+                if (orderDropdownSelectedIndex[orderId] >= 0 && orderDropdownSelectedIndex[orderId] < items.length) {
+                    items[orderDropdownSelectedIndex[orderId]].click();
+                } else if (items.length > 0) {
+                    items[0].click();
+                }
+                orderDropdownSelectedIndex[orderId] = -1;
+            } else if (event.key === 'Escape') {
+                event.preventDefault();
+                dropdown.classList.add('hidden');
+                orderDropdownSelectedIndex[orderId] = -1;
+            }
+        }
+
+        function updateOrderDropdownHighlight(items, index) {
+            items.forEach((item, idx) => {
+                if (idx === index) {
+                    item.classList.add('bg-slate-800', 'text-lab-400');
+                } else {
+                    item.classList.remove('bg-slate-800', 'text-lab-400');
+                }
+            });
         }
 
         function updateOrdersUI() {
@@ -1111,7 +1176,7 @@
                     if (itemsCount > 0) {
                         order.items.forEach((it, idx) => {
                             rowsHtml += `
-                                <div class="flex justify-between items-center py-2.5 px-4 bg-slate-950 rounded-xl border border-slate-700/60 text-xs gap-3">
+                                <div class="flex justify-between items-center py-2.5 px-4 bg-slate-900 rounded-xl border border-slate-700/80 text-xs gap-3">
                                     <div class="flex items-center gap-3 min-w-0 flex-1">
                                         <span class="text-slate-200 font-semibold truncate">${it.name}</span>
                                     </div>
@@ -1133,16 +1198,16 @@
                                 <!-- TRES ELEMENTOS EN EL MISMO RENGLÓN EXACTO -->
                                 <div class="flex gap-2.5 items-center">
                                     <div class="relative flex-1">
-                                        <input type="text" id="order-item-name-${order.id}" oninput="handleOrderInlineSearch(event, '${order.id}')" placeholder="Buscar reactivo o insumo..." class="w-full bg-slate-950 border border-slate-700 rounded-xl px-4 h-11 text-xs text-slate-100 focus:outline-none focus:border-lab-500">
-                                        <div id="order-dropdown-${order.id}" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-950 border border-slate-700 rounded-xl shadow-2xl max-h-40 overflow-y-auto z-50 divide-y divide-slate-800"></div>
+                                        <input type="text" id="order-item-name-${order.id}" oninput="handleOrderInlineSearch(event, '${order.id}')" onkeydown="handleOrderInlineKeydown(event, '${order.id}')" placeholder="Buscar reactivo o insumo..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 h-11 text-xs text-slate-100 focus:outline-none focus:border-lab-500">
+                                        <div id="order-dropdown-${order.id}" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-h-40 overflow-y-auto z-50 divide-y divide-slate-800"></div>
                                     </div>
-                                    <input type="number" id="order-item-qty-${order.id}" min="1" value="1" placeholder="Cant." class="w-24 bg-slate-950 border border-slate-700 rounded-xl px-3 h-11 text-xs text-center font-bold text-slate-100 focus:outline-none focus:border-lab-500 shrink-0">
+                                    <input type="number" id="order-item-qty-${order.id}" min="1" value="1" placeholder="Cant." onkeydown="if(event.key==='Enter') addOrUpdateItemToOrder('${order.id}')" class="w-24 bg-slate-900 border border-slate-700 rounded-xl px-3 h-11 text-xs text-center font-bold text-slate-100 focus:outline-none focus:border-lab-500 shrink-0">
                                     <button onclick="addOrUpdateItemToOrder('${order.id}')" class="bg-sky-600 hover:bg-sky-700 text-white px-5 h-11 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 shadow transition shrink-0">
                                         <i class="fa-solid fa-plus"></i> Sumar Insumo
                                     </button>
                                 </div>
                             </div>
-                            <div class="space-y-2.5 max-h-52 overflow-y-auto">
+                            <div class="space-y-2.5">
                                 ${rowsHtml}
                             </div>
                         </div>
