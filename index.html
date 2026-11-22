@@ -10,6 +10,8 @@
     <script src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
     <!-- JsBarcode for label generation -->
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <!-- SheetJS -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -183,6 +185,9 @@
                 <i class="fa-solid fa-box-open text-5xl mb-3 text-slate-600"></i>
                 <p class="text-sm font-medium">No se encontraron ítems con estos filtros</p>
             </div>
+            <button type="button" onclick="exportInventoryToExcel()" class="bg-emerald-700 hover:bg-emerald-600 text-white px-4 h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow transition shrink-0">
+    <i class="fa-solid fa-file-excel"></i> Exportar Excel
+</button>
         </section>
 
         <!-- 2. PESTAÑA ESCÁNER -->
@@ -1647,6 +1652,33 @@
                 JsBarcode("#barcodeSvg", item.code, { format: "CODE128", lineColor: "#0f172a", width: 2, height: 45, displayValue: true });
             } catch (e) {}
         }
+        function exportInventoryToExcel() {
+    if (!Array.isArray(inventoryArray) || inventoryArray.length === 0) {
+        alert("No hay datos de inventario para exportar.");
+        return;
+    }
+
+    const rows = inventoryArray.map(item => ({
+        Nombre: item.name || '',
+        Stock: Number(item.stock) || 0,
+        Vencimiento: item.expiry || '',
+        Lote: item.batch || ''
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    worksheet['!cols'] = [
+        { wch: 36 }, // Nombre
+        { wch: 10 }, // Stock
+        { wch: 14 }, // Vencimiento
+        { wch: 18 }  // Lote
+    ];
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Stock Actual");
+
+    const fileName = `LudovicApp_Stock_${getTodayISO()}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
+}
     </script>
 </body>
 </html>
