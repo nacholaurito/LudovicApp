@@ -1434,8 +1434,9 @@
                         </div>`;
                 });
 
+                const escapedName = name.replace(/\\/g, "\\\\").replace(/'/g, "\\'");
                 card.innerHTML = `
-                    <div onclick="toggleAccordion('${name.replace(/'/g, "\\'")}')" class="p-5 grid grid-cols-12 gap-3 items-center cursor-pointer hover:bg-slate-750 transition">
+                    <div onclick="toggleAccordion('${escapedName}')" class="p-5 grid grid-cols-12 gap-3 items-center cursor-pointer hover:bg-slate-750 transition">
                         <div class="col-span-8 space-y-2">
                             <div class="flex items-center gap-2.5 flex-wrap">
                                 <span class="text-xs px-3 py-1 rounded-full border ${typeBadgeClass} font-semibold">${group.type}</span>
@@ -1443,9 +1444,14 @@
                             </div>
                             <h3 class="text-base font-bold text-white leading-snug">${group.name}</h3>
                         </div>
-                        <div class="col-span-4 flex flex-col items-end justify-center text-right space-y-1.5">
-                            <div class="text-xs text-slate-400">Total: <b class="text-white">${group.totalStock} u.</b></div>
-                            <div>${headerBadge}</div>
+                        <div class="col-span-4 flex items-center justify-end gap-2.5 text-right">
+                            <div class="flex flex-col items-end justify-center space-y-1.5">
+                                <div class="text-xs text-slate-400">Total: <b class="text-white">${group.totalStock} u.</b></div>
+                                <div>${headerBadge}</div>
+                            </div>
+                            <button onclick="event.stopPropagation(); deleteItemGroupCloud('${escapedName}')" class="w-8 h-8 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-950/60 flex items-center justify-center transition shrink-0" title="Eliminar reactivo completo">
+                                <i class="fa-solid fa-trash text-xs"></i>
+                            </button>
                         </div>
                     </div>
                     <div id="acc-${CSS.escape(name)}" class="${isOpen ? '' : 'hidden'} p-4.5 bg-slate-900/60 border-t border-slate-700/60 space-y-3">
@@ -1493,6 +1499,20 @@
 
         function deleteItemCloud(id) {
             if (confirm('¿Eliminar este lote?') && dbRef) dbRef.child(id).remove();
+        }
+
+        function deleteItemGroupCloud(name) {
+            if (!dbRef) return;
+            const matchingItems = inventoryArray.filter(item => (item.name || 'Sin Nombre') === name);
+            if (matchingItems.length === 0) return;
+            if (confirm(`¿Eliminar "${name}" y todos sus registros (${matchingItems.length}) del inventario?`)) {
+                const updates = {};
+                matchingItems.forEach(item => {
+                    updates[item.id] = null;
+                });
+                dbRef.update(updates);
+                delete openAccordions[name];
+            }
         }
 
         // --- PARSER DE DATAMATRIX GS1 INDUSTRIAL (INTACTO) ---
