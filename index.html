@@ -824,6 +824,20 @@
                 }
             }
 
+            async turnOffTorch() {
+                this.torchEnabled = false;
+                this.btnTorch.classList.remove('bg-amber-500', 'text-slate-950');
+                try {
+                    if (!this.videoEl.srcObject) return;
+                    const track = this.videoEl.srcObject.getVideoTracks()[0];
+                    if (track && track.applyConstraints) {
+                        await track.applyConstraints({ advanced: [{ torch: false }] });
+                    }
+                } catch (err) {
+                    console.warn("No se pudo apagar la linterna automáticamente");
+                }
+            }
+            
             async switchCamera() {
                 if (this.availableDevices.length <= 1) return;
                 const currentIndex = this.availableDevices.findIndex(d => d.deviceId === this.selectedDeviceId);
@@ -1466,6 +1480,9 @@
         }
 
         function processScannedCode(rawData) {
+            if (appScanner && appScanner.torchEnabled) {
+    appScanner.turnOffTorch();
+}
             const cleanRaw = rawData.trim();
             const parsed = parseSmartQR(cleanRaw);
             activeScanParsed = parsed;
