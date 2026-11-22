@@ -1468,7 +1468,7 @@
         function parseSmartQR(rawData) {
             if (!rawData) return { code: '', batch: '', expiry: '' };
             let code = '', batch = '', expiry = '';
-            let clean = rawData.trim().replace(/[ -]/g, '|');
+            let clean = rawData.trim().replace(/[   - ]/g, '|');
 
             if (clean.includes('(')) {
                 const matches = [...clean.matchAll(/\((\d+)\)([^\(\)]+)/g)];
