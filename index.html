@@ -311,8 +311,8 @@
                 </div>
 
                 <div class="border border-slate-700 rounded-xl overflow-hidden bg-slate-900">
-    <ul id="catalogList" class="divide-y divide-slate-800 text-sm"></ul>
-</div>
+                    <ul id="catalogList" class="divide-y divide-slate-800 text-sm"></ul>
+                </div>
             </div>
         </section>
     </main>
@@ -759,6 +759,10 @@
                         this.videoEl,
                         (result, err) => {
                             if (result) {
+                                const scanModalOpen = !document.getElementById('scanActionModal').classList.contains('hidden');
+                                const itemModalOpen = !document.getElementById('itemModal').classList.contains('hidden');
+                                if (scanModalOpen || itemModalOpen) return;
+
                                 processScannedCode(result.getText());
                                 this.playBeepSound();
                             }
@@ -778,6 +782,7 @@
 
             async stopScanner() {
                 this.isScanning = false;
+                await this.turnOffTorch();
                 try {
                     if (this.codeReader) this.codeReader.reset();
                 } catch (e) {}
@@ -1480,9 +1485,13 @@
         }
 
         function processScannedCode(rawData) {
+            const scanModalOpen = !document.getElementById('scanActionModal').classList.contains('hidden');
+            const itemModalOpen = !document.getElementById('itemModal').classList.contains('hidden');
+            if (scanModalOpen || itemModalOpen) return;
+
             if (appScanner && appScanner.torchEnabled) {
-    appScanner.turnOffTorch();
-}
+                appScanner.turnOffTorch();
+            }
             const cleanRaw = rawData.trim();
             const parsed = parseSmartQR(cleanRaw);
             activeScanParsed = parsed;
