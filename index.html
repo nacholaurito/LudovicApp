@@ -453,9 +453,15 @@
                     </div>
                 </div>
 
-                <div class="space-y-1">
-                    <label class="block text-xs font-medium text-slate-400">Vencimiento</label>
-                    <input type="date" id="itemExpiry" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="space-y-1">
+                        <label class="block text-xs font-medium text-slate-400">Fecha de ingreso</label>
+                        <input type="date" id="itemEntryDate" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="block text-xs font-medium text-slate-400">Vencimiento</label>
+                        <input type="date" id="itemExpiry" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 h-10 text-sm text-slate-100 focus:outline-none focus:border-lab-500">
+                    </div>
                 </div>
 
                 <div class="flex gap-2 pt-2">
@@ -496,6 +502,12 @@
         window.addEventListener('DOMContentLoaded', () => {
             if (firebase.apps.length === 0) firebase.initializeApp(firebaseConfig);
         });
+
+        function getTodayISO() {
+            const now = new Date();
+            const offsetMs = now.getTimezoneOffset() * 60000;
+            return new Date(now.getTime() - offsetMs).toISOString().split('T')[0];
+        }
 
         function verifyKeyWithFirebase() {
             const inputVal = document.getElementById('accessKeyInput').value.trim();
@@ -1330,11 +1342,11 @@
                     lotsHtml += `
                         <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-700/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                             <div class="space-y-1 text-sm">
-                                <div class="text-white font-semibold flex items-center gap-2.5">
+                                <div class="text-white font-semibold flex items-center gap-2.5 flex-wrap">
                                     <span>Lote: <span class="font-mono text-lab-400 font-bold">${lot.batch}</span></span>
                                     <span class="text-xs text-slate-500">(${lot.code})</span>
                                 </div>
-                                <div class="text-slate-400 text-xs">Vencimiento: ${lot.expiry}</div>
+                                <div class="text-slate-400 text-xs">Ingreso: ${lot.entryDate || '-'} &bull; Vencimiento: ${lot.expiry || '-'}</div>
                             </div>
                             <div class="flex items-center justify-between w-full sm:w-auto gap-4">
                                 <span class="font-bold text-sm ${lot.stock <= 3 ? 'text-rose-400 bg-rose-950 px-3 py-1 rounded-lg border border-rose-900' : 'text-slate-200'}">${lot.stock} u.</span>
@@ -1524,6 +1536,7 @@
             document.getElementById('editKey').value = "";
             document.getElementById('itemForm').reset();
             document.getElementById('nameSuggestionsDropdown').classList.add('hidden');
+            document.getElementById('itemEntryDate').value = getTodayISO();
             
             if (prefillData) {
                 if (prefillData.code) document.getElementById('itemCode').value = prefillData.code;
@@ -1547,6 +1560,7 @@
             document.getElementById('itemSection').value = item.section;
             document.getElementById('itemStock').value = item.stock;
             document.getElementById('itemBatch').value = item.batch;
+            document.getElementById('itemEntryDate').value = item.entryDate || getTodayISO();
             document.getElementById('itemExpiry').value = item.expiry;
             document.getElementById('itemModal').classList.remove('hidden');
             document.getElementById('itemModal').classList.add('flex');
@@ -1570,6 +1584,7 @@
                 section: document.getElementById('itemSection').value,
                 stock: stock,
                 batch: document.getElementById('itemBatch').value,
+                entryDate: document.getElementById('itemEntryDate').value || getTodayISO(),
                 expiry: document.getElementById('itemExpiry').value
             };
 
