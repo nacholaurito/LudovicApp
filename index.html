@@ -144,7 +144,7 @@
             <!-- TRES CUBOS EN UNA MISMA LÍNEA ESTRICTA -->
             <div class="grid grid-cols-3 gap-2 sm:gap-4">
                 <div onclick="setKpiFilter('all')" id="kpiCardAll" class="bg-slate-800 border-2 border-slate-700 rounded-2xl p-3 sm:p-4 text-center shadow-lg cursor-pointer hover:border-lab-500 transition">
-                    <p class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider truncate">Total Lotes</p>
+                    <p class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-wider truncate">Total Reactivos</p>
                     <h4 id="kpiTotal" class="text-2xl sm:text-3xl font-extrabold text-white mt-1">0</h4>
                 </div>
                 <div onclick="setKpiFilter('expiring')" id="kpiCardExpiring" class="bg-slate-800 border-2 border-slate-700 rounded-2xl p-3 sm:p-4 text-center shadow-lg cursor-pointer hover:border-amber-500 transition">
@@ -899,17 +899,41 @@
         function updateKPIs(data) {
             const today = new Date();
             today.setHours(0,0,0,0);
-            let expiringCount = 0, criticalCount = 0;
+
+            const grouped = {};
             data.forEach(item => {
-                const stockVal = parseInt(item.stock) || 0;
-                if (stockVal <= 3) criticalCount++;
-                if (stockVal > 0 && item.expiry) {
-                    const expDate = new Date(item.expiry + 'T00:00:00');
+                const name = item.name || 'Sin Nombre';
+                if (!grouped[name]) {
+                    grouped[name] = { totalStock: 0, lots: [] };
+                }
+                grouped[name].totalStock += (parseInt(item.stock) || 0);
+                grouped[name].lots.push(item);
+            });
+
+            const names = Object.keys(grouped);
+            let expiringCount = 0;
+            let criticalCount = 0;
+
+            names.forEach(name => {
+                const group = grouped[name];
+                if (group.totalStock <= 3) {
+                    criticalCount++;
+                }
+
+                const hasExpiringOrExpiredLot = group.lots.some(lot => {
+                    const lotStock = parseInt(lot.stock) || 0;
+                    if (lotStock <= 0 || !lot.expiry) return false;
+                    const expDate = new Date(lot.expiry + 'T00:00:00');
                     const diffDays = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
-                    if (diffDays <= 30) expiringCount++;
+                    return diffDays <= 30;
+                });
+
+                if (hasExpiringOrExpiredLot) {
+                    expiringCount++;
                 }
             });
-            document.getElementById('kpiTotal').innerText = data.length;
+
+            document.getElementById('kpiTotal').innerText = names.length;
             document.getElementById('kpiExpiring').innerText = expiringCount;
             document.getElementById('kpiCritical').innerText = criticalCount;
         }
@@ -1317,13 +1341,27 @@
             const today = new Date();
             today.setHours(0,0,0,0);
 
-            const kpiFiltered = dataToRender.filter(item => {
-                if (activeKpiFilter === 'expiring') {
-                    if (!item.expiry) return false;
+            const totalStockByName = {};
+            const hasExpiringByName = {};
+            dataToRender.forEach(item => {
+                const n = item.name || 'Sin Nombre';
+                const s = parseInt(item.stock) || 0;
+                totalStockByName[n] = (totalStockByName[n] || 0) + s;
+                if (s > 0 && item.expiry) {
                     const expDate = new Date(item.expiry + 'T00:00:00');
-                    return Math.ceil((expDate - today) / (1000 * 60 * 60 * 24)) <= 30;
+                    const diffDays = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
+                    if (diffDays <= 30) {
+                        hasExpiringByName[n] = true;
+                    }
+                }
+            });
+
+            const kpiFiltered = dataToRender.filter(item => {
+                const n = item.name || 'Sin Nombre';
+                if (activeKpiFilter === 'expiring') {
+                    return !!hasExpiringByName[n];
                 } else if (activeKpiFilter === 'critical') {
-                    return item.stock <= 3;
+                    return (totalStockByName[n] || 0) <= 3;
                 }
                 return true;
             });
