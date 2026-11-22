@@ -901,8 +901,9 @@
             today.setHours(0,0,0,0);
             let expiringCount = 0, criticalCount = 0;
             data.forEach(item => {
-                if (item.stock <= 3) criticalCount++;
-                if (item.expiry) {
+                const stockVal = parseInt(item.stock) || 0;
+                if (stockVal <= 3) criticalCount++;
+                if (stockVal > 0 && item.expiry) {
                     const expDate = new Date(item.expiry + 'T00:00:00');
                     const diffDays = Math.ceil((expDate - today) / (1000 * 60 * 60 * 24));
                     if (diffDays <= 30) expiringCount++;
@@ -1115,7 +1116,9 @@
             const dropdown = document.getElementById(`order-dropdown-${orderId}`);
             if (!dropdown) return;
 
-            orderDropdownSelectedIndex[orderId] = -1;
+            if (!orderDropdownSelectedIndex[orderId]) {
+                orderDropdownSelectedIndex[orderId] = -1;
+            }
 
             const query = input.value.trim().toLowerCase();
             const allNames = getAllStandardNames();
@@ -1127,7 +1130,7 @@
             }
 
             dropdown.innerHTML = '';
-            matches.forEach((name) => {
+            matches.forEach((name, idx) => {
                 const div = document.createElement('div');
                 div.className = "px-3.5 py-2.5 text-xs text-slate-200 hover:bg-slate-800 hover:text-lab-400 cursor-pointer font-medium transition";
                 div.innerText = name;
@@ -1135,8 +1138,6 @@
                     input.value = name;
                     dropdown.classList.add('hidden');
                     orderDropdownSelectedIndex[orderId] = -1;
-                    const qtyInput = document.getElementById(`order-item-qty-${orderId}`);
-                    if (qtyInput) qtyInput.focus();
                 };
                 dropdown.appendChild(div);
             });
@@ -1145,9 +1146,9 @@
 
         function handleOrderInlineKeydown(event, orderId) {
             const dropdown = document.getElementById(`order-dropdown-${orderId}`);
+            const input = event.target;
             if (!dropdown || dropdown.classList.contains('hidden')) {
                 if (event.key === 'Enter') {
-                    event.preventDefault();
                     addOrUpdateItemToOrder(orderId);
                 }
                 return;
@@ -1156,7 +1157,7 @@
             const items = dropdown.querySelectorAll('div');
             if (items.length === 0) return;
 
-            if (typeof orderDropdownSelectedIndex[orderId] !== 'number') {
+            if (orderDropdownSelectedIndex[orderId] === undefined) {
                 orderDropdownSelectedIndex[orderId] = -1;
             }
 
@@ -1164,16 +1165,18 @@
                 event.preventDefault();
                 orderDropdownSelectedIndex[orderId] = (orderDropdownSelectedIndex[orderId] + 1) % items.length;
                 updateOrderDropdownHighlight(items, orderDropdownSelectedIndex[orderId]);
-                items[orderDropdownSelectedIndex[orderId]].scrollIntoView({ block: 'nearest' });
             } else if (event.key === 'ArrowUp') {
                 event.preventDefault();
                 orderDropdownSelectedIndex[orderId] = (orderDropdownSelectedIndex[orderId] - 1 + items.length) % items.length;
                 updateOrderDropdownHighlight(items, orderDropdownSelectedIndex[orderId]);
-                items[orderDropdownSelectedIndex[orderId]].scrollIntoView({ block: 'nearest' });
             } else if (event.key === 'Enter') {
                 event.preventDefault();
-                const idx = orderDropdownSelectedIndex[orderId] >= 0 ? orderDropdownSelectedIndex[orderId] : 0;
-                items[idx].click();
+                if (orderDropdownSelectedIndex[orderId] >= 0 && orderDropdownSelectedIndex[orderId] < items.length) {
+                    items[orderDropdownSelectedIndex[orderId]].click();
+                } else if (items.length > 0) {
+                    items[0].click();
+                }
+                orderDropdownSelectedIndex[orderId] = -1;
             } else if (event.key === 'Escape') {
                 event.preventDefault();
                 dropdown.classList.add('hidden');
@@ -1239,7 +1242,7 @@
                                 <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">Agregar insumo a la OC</label>
                                 <div class="flex gap-2.5 items-center">
                                     <div class="relative flex-1">
-                                        <input type="text" id="order-item-name-${order.id}" onfocus="handleOrderInlineSearch(event, '${order.id}')" oninput="handleOrderInlineSearch(event, '${order.id}')" onkeydown="handleOrderInlineKeydown(event, '${order.id}')" placeholder="Buscar reactivo o insumo..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 h-11 text-xs text-slate-100 focus:outline-none focus:border-lab-500">
+                                        <input type="text" id="order-item-name-${order.id}" oninput="handleOrderInlineSearch(event, '${order.id}')" onkeydown="handleOrderInlineKeydown(event, '${order.id}')" placeholder="Buscar reactivo o insumo..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 h-11 text-xs text-slate-100 focus:outline-none focus:border-lab-500">
                                         <div id="order-dropdown-${order.id}" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-h-40 overflow-y-auto z-50 divide-y divide-slate-800"></div>
                                     </div>
                                     <input type="number" id="order-item-qty-${order.id}" min="1" value="1" placeholder="Cant." onkeydown="if(event.key==='Enter') addOrUpdateItemToOrder('${order.id}')" class="w-24 bg-slate-900 border border-slate-700 rounded-xl px-3 h-11 text-xs text-center font-bold text-slate-100 focus:outline-none focus:border-lab-500 shrink-0">
@@ -1341,7 +1344,7 @@
                 grouped[name].lots.push(item);
             });
 
-Object.keys(grouped).forEach(name => {
+            Object.keys(grouped).forEach(name => {
                 const group = grouped[name];
                 group.lots.sort((a, b) => {
                     if (!a.expiry && !b.expiry) return 0;
@@ -1349,8 +1352,9 @@ Object.keys(grouped).forEach(name => {
                     if (!b.expiry) return -1;
                     return a.expiry.localeCompare(b.expiry);
                 });
+                const activeLots = group.lots.filter(lot => (parseInt(lot.stock) || 0) > 0);
                 let minDays = 999999, hasExpired = false;
-                group.lots.forEach(lot => {
+                activeLots.forEach(lot => {
                     if (lot.expiry) {
                         const diffDays = Math.ceil((new Date(lot.expiry + 'T00:00:00') - today) / (1000 * 60 * 60 * 24));
                         if (diffDays < 0) hasExpired = true;
@@ -1358,7 +1362,7 @@ Object.keys(grouped).forEach(name => {
                     }
                 });
 
-                let headerBadge = `<span class="text-xs text-slate-400 font-medium whitespace-nowrap">${group.lots.length} lote(s)</span>`;
+                let headerBadge = `<span class="text-xs text-slate-400 font-medium whitespace-nowrap">${activeLots.length} lote(s)</span>`;
                 if (hasExpired) headerBadge = `<span class="bg-rose-950 text-rose-400 border border-rose-800 text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">Vencido</span>`;
                 else if (minDays <= 30) headerBadge = `<span class="bg-amber-950 text-amber-400 border border-amber-800 text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">Vence en ${minDays}d</span>`;
 
@@ -1367,8 +1371,10 @@ Object.keys(grouped).forEach(name => {
                 const card = document.createElement('div');
                 card.className = "bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-md";
                 
-                let lotsHtml = '';
-                group.lots.forEach(lot => {
+                let lotsHtml = activeLots.length === 0
+                    ? `<div class="text-center text-xs text-slate-500 py-3">Sin stock disponible (0 u.)</div>`
+                    : '';
+                activeLots.forEach(lot => {
                     lotsHtml += `
                         <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-700/60 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                             <div class="space-y-1 text-sm">
@@ -1391,7 +1397,7 @@ Object.keys(grouped).forEach(name => {
                 });
 
                 card.innerHTML = `
-                    <div onclick="toggleAccordion('${name.replace(/'/g, "\'")}')" class="p-5 grid grid-cols-12 gap-3 items-center cursor-pointer hover:bg-slate-750 transition">
+                    <div onclick="toggleAccordion('${name.replace(/'/g, "\\'")}')" class="p-5 grid grid-cols-12 gap-3 items-center cursor-pointer hover:bg-slate-750 transition">
                         <div class="col-span-8 space-y-2">
                             <div class="flex items-center gap-2.5 flex-wrap">
                                 <span class="text-xs px-3 py-1 rounded-full border ${typeBadgeClass} font-semibold">${group.type}</span>
@@ -1471,7 +1477,7 @@ Object.keys(grouped).forEach(name => {
             }
 
             if (!code || !batch || !expiry) {
-                let raw = clean.replace(/[()\\]/g, ''), i = 0;
+                let raw = clean.replace(/[()\\\\]/g, ''), i = 0;
                 while (i < raw.length) {
                     if (raw.startsWith('01', i) && i + 16 <= raw.length) {
                         code = raw.substring(i + 2, i + 16); i += 16;
@@ -1658,36 +1664,35 @@ Object.keys(grouped).forEach(name => {
                 JsBarcode("#barcodeSvg", item.code, { format: "CODE128", lineColor: "#0f172a", width: 2, height: 45, displayValue: true });
             } catch (e) {}
         }
+        function exportInventoryToExcel() {
+    if (!Array.isArray(inventoryArray) || inventoryArray.length === 0) {
+        alert("No hay datos de inventario para exportar.");
+        return;
+    }
 
-function exportInventoryToExcel() {
-            if (!Array.isArray(inventoryArray) || inventoryArray.length === 0) {
-                alert("No hay datos de inventario para exportar.");
-                return;
-            }
+    const rows = inventoryArray.map(item => ({
+        Nombre: item.name || '',
+        Tipo: item.type || 'Reactivo',
+        Stock: Number(item.stock) || 0,
+        Vencimiento: item.expiry || '',
+        Lote: item.batch || ''
+    }));
 
-            const rows = inventoryArray.map(item => ({
-                Nombre: item.name || '',
-                Tipo: item.type || 'Reactivo',
-                Stock: Number(item.stock) || 0,
-                Vencimiento: item.expiry || '',
-                Lote: item.batch || ''
-            }));
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    worksheet['!cols'] = [
+        { wch: 36 }, // Nombre
+        { wch: 14 }, // Tipo
+        { wch: 10 }, // Stock
+        { wch: 14 }, // Vencimiento
+        { wch: 18 }  // Lote
+    ];
 
-            const worksheet = XLSX.utils.json_to_sheet(rows);
-            worksheet['!cols'] = [
-                { wch: 36 }, // Nombre
-                { wch: 14 }, // Tipo
-                { wch: 10 }, // Stock
-                { wch: 14 }, // Vencimiento
-                { wch: 18 }  // Lote
-            ];
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Stock Actual");
 
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Stock Actual");
-
-            const fileName = `LudovicApp_Stock_${getTodayISO()}.xlsx`;
-            XLSX.writeFile(workbook, fileName);
-        }
+    const fileName = `LudovicApp_Stock_${getTodayISO()}.xlsx`;
+    XLSX.writeFile(workbook, fileName);
+}
     </script>
 </body>
 </html>
