@@ -1341,8 +1341,14 @@
                 grouped[name].lots.push(item);
             });
 
-            Object.keys(grouped).forEach(name => {
+Object.keys(grouped).forEach(name => {
                 const group = grouped[name];
+                group.lots.sort((a, b) => {
+                    if (!a.expiry && !b.expiry) return 0;
+                    if (!a.expiry) return 1;
+                    if (!b.expiry) return -1;
+                    return a.expiry.localeCompare(b.expiry);
+                });
                 let minDays = 999999, hasExpired = false;
                 group.lots.forEach(lot => {
                     if (lot.expiry) {
@@ -1653,7 +1659,7 @@
             } catch (e) {}
         }
 
-        function exportInventoryToExcel() {
+function exportInventoryToExcel() {
             if (!Array.isArray(inventoryArray) || inventoryArray.length === 0) {
                 alert("No hay datos de inventario para exportar.");
                 return;
@@ -1661,6 +1667,7 @@
 
             const rows = inventoryArray.map(item => ({
                 Nombre: item.name || '',
+                Tipo: item.type || 'Reactivo',
                 Stock: Number(item.stock) || 0,
                 Vencimiento: item.expiry || '',
                 Lote: item.batch || ''
@@ -1669,6 +1676,7 @@
             const worksheet = XLSX.utils.json_to_sheet(rows);
             worksheet['!cols'] = [
                 { wch: 36 }, // Nombre
+                { wch: 14 }, // Tipo
                 { wch: 10 }, // Stock
                 { wch: 14 }, // Vencimiento
                 { wch: 18 }  // Lote
