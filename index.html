@@ -1233,11 +1233,14 @@
             ordersArray.forEach(order => {
                 const isReceived = order.status === 'Recibida';
                 const statusBadge = isReceived 
-                    ? '<span class="bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap">Recibida</span>'
-                    : '<span class="bg-amber-950 text-amber-400 border border-amber-800 text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap">Pendiente</span>';
+                    ? '<span class="inline-flex items-center gap-1.5 bg-emerald-950/90 text-emerald-300 border border-emerald-700/70 text-[11px] font-semibold px-3 py-1 rounded-full whitespace-nowrap"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Recibida</span>'
+                    : '<span class="inline-flex items-center gap-1.5 bg-amber-950/90 text-amber-300 border border-amber-700/70 text-[11px] font-semibold px-3 py-1 rounded-full whitespace-nowrap"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>Pendiente</span>';
 
                 const isOpen = openOrderAccordions[order.id] || false;
                 const itemsCount = Array.isArray(order.items) ? order.items.length : 0;
+                const totalUnitsPending = Array.isArray(order.items)
+                    ? order.items.reduce((acc, it) => acc + (parseInt(it.qty) || 0), 0)
+                    : 0;
 
                 let itemsHtml = '';
                 if (isOpen) {
@@ -1245,37 +1248,41 @@
                     if (itemsCount > 0) {
                         order.items.forEach((it, idx) => {
                             rowsHtml += `
-                                <div class="flex justify-between items-center py-2.5 px-4 bg-slate-900 rounded-xl border border-slate-700/80 text-xs gap-3">
+                                <div class="flex justify-between items-center py-3 px-4 bg-slate-900/95 hover:bg-slate-900 rounded-xl border border-slate-700/70 text-sm gap-3 transition">
                                     <div class="flex items-center gap-3 min-w-0 flex-1">
-                                        <span class="text-slate-200 font-semibold truncate">${it.name}</span>
+                                        <span class="w-2 h-2 rounded-full bg-lab-500/80 shrink-0"></span>
+                                        <span class="text-slate-100 font-medium truncate">${it.name}</span>
                                     </div>
-                                    <div class="flex items-center gap-3 shrink-0">
-                                        <span class="font-mono font-bold text-lab-400 bg-lab-950/60 border border-lab-800/60 px-2.5 py-1 rounded-lg whitespace-nowrap">${it.qty} u. pendientes</span>
-                                        <button onclick="removeOrderItem('${order.id}', ${idx})" class="text-rose-400 hover:text-rose-300 p-1.5" title="Quitar ítem"><i class="fa-solid fa-xmark text-sm"></i></button>
+                                    <div class="flex items-center gap-2.5 shrink-0">
+                                        <span class="font-mono text-xs font-semibold text-amber-300 bg-amber-950/60 border border-amber-800/60 px-3 py-1 rounded-lg whitespace-nowrap">${it.qty} u. pendientes</span>
+                                        <button onclick="removeOrderItem('${order.id}', ${idx})" class="w-8 h-8 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-950/60 flex items-center justify-center transition" title="Quitar ítem"><i class="fa-solid fa-xmark text-xs"></i></button>
                                     </div>
                                 </div>
                             `;
                         });
                     } else {
-                        rowsHtml = `<p class="text-center text-xs text-slate-500 py-4">No hay insumos pendientes en esta orden.</p>`;
+                        rowsHtml = `<p class="text-center text-xs text-slate-500 py-5 bg-slate-900/40 rounded-xl border border-dashed border-slate-700/70">No hay insumos pendientes en esta orden.</p>`;
                     }
 
                     itemsHtml = `
-                        <div class="mt-4 pt-4 border-t border-slate-700 space-y-4">
-                            <div class="space-y-2">
+                        <div class="mt-4 pt-4 border-t border-slate-700/80 space-y-4">
+                            <div class="bg-slate-900/60 border border-slate-700/60 rounded-xl p-3.5 space-y-2.5">
                                 <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider">Agregar insumo a la OC</label>
-                                <div class="flex gap-2.5 items-center">
+                                <div class="flex flex-col sm:flex-row gap-2.5 items-stretch sm:items-center">
                                     <div class="relative flex-1">
-                                        <input type="text" id="order-item-name-${order.id}" oninput="handleOrderInlineSearch(event, '${order.id}')" onkeydown="handleOrderInlineKeydown(event, '${order.id}')" placeholder="Buscar reactivo o insumo..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 h-11 text-xs text-slate-100 focus:outline-none focus:border-lab-500">
+                                        <i class="fa-solid fa-flask text-xs text-slate-500 absolute left-3.5 top-3.5 pointer-events-none"></i>
+                                        <input type="text" id="order-item-name-${order.id}" oninput="handleOrderInlineSearch(event, '${order.id}')" onkeydown="handleOrderInlineKeydown(event, '${order.id}')" placeholder="Buscar reactivo o insumo..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-9 pr-4 h-11 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-lab-500">
                                         <div id="order-dropdown-${order.id}" class="hidden absolute left-0 right-0 top-full mt-1 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-h-40 overflow-y-auto z-50 divide-y divide-slate-800"></div>
                                     </div>
-                                    <input type="number" id="order-item-qty-${order.id}" min="1" value="1" placeholder="Cant." onkeydown="if(event.key==='Enter') addOrUpdateItemToOrder('${order.id}')" class="w-24 bg-slate-900 border border-slate-700 rounded-xl px-3 h-11 text-xs text-center font-bold text-slate-100 focus:outline-none focus:border-lab-500 shrink-0">
-                                    <button onclick="addOrUpdateItemToOrder('${order.id}')" class="bg-sky-600 hover:bg-sky-700 text-white px-5 h-11 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 shadow transition shrink-0">
-                                        <i class="fa-solid fa-plus"></i> Sumar Insumo
-                                    </button>
+                                    <div class="flex gap-2">
+                                        <input type="number" id="order-item-qty-${order.id}" min="1" value="1" placeholder="Cant." onkeydown="if(event.key==='Enter') addOrUpdateItemToOrder('${order.id}')" class="w-20 bg-slate-900 border border-slate-700 rounded-xl px-2.5 h-11 text-sm text-center font-mono font-bold text-slate-100 focus:outline-none focus:border-lab-500 shrink-0">
+                                        <button onclick="addOrUpdateItemToOrder('${order.id}')" class="bg-lab-600 hover:bg-lab-700 text-white px-4 h-11 rounded-xl text-sm font-semibold flex items-center justify-center gap-2 shadow transition shrink-0">
+                                            <i class="fa-solid fa-plus text-xs"></i> Sumar Insumo
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="space-y-2.5">
+                            <div class="space-y-2">
                                 ${rowsHtml}
                             </div>
                         </div>
@@ -1283,20 +1290,25 @@
                 }
 
                 const card = document.createElement('div');
-                card.className = "bg-slate-800 border border-slate-700 rounded-2xl p-5 md:p-6 space-y-4 shadow-md transition hover:border-slate-600";
+                card.className = "bg-slate-800/95 border border-slate-700/80 rounded-2xl p-5 md:p-6 shadow-lg transition hover:border-slate-600";
                 card.innerHTML = `
-                    <div class="flex justify-between items-start cursor-pointer" onclick="toggleOrderAccordion('${order.id}')">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center gap-3">
-                                <span class="text-xs font-mono text-lab-400 font-bold tracking-wide">${order.orderNumber}</span>
+                    <div class="flex justify-between items-start gap-4 cursor-pointer" onclick="toggleOrderAccordion('${order.id}')">
+                        <div class="space-y-1.5 min-w-0">
+                            <div class="flex items-center gap-2.5 flex-wrap">
+                                <span class="text-xs font-mono text-lab-400 bg-lab-950/50 border border-lab-800/60 px-2.5 py-0.5 rounded-md font-semibold tracking-wide">${order.orderNumber}</span>
                                 ${statusBadge}
                             </div>
-                            <h4 class="text-base font-bold text-white">${order.provider}</h4>
-                            <p class="text-xs text-slate-400">Vto: ${order.expiry || 'No especificado'} &bull; Ítems pendientes: ${itemsCount}</p>
+                            <h4 class="text-base font-bold text-white truncate pt-0.5">${order.provider}</h4>
+                            <div class="flex items-center gap-3 flex-wrap text-xs text-slate-400">
+                                <span><i class="fa-regular fa-calendar mr-1 text-slate-500"></i>Vto: <b class="text-slate-300 font-medium">${order.expiry || 'No especificado'}</b></span>
+                                <span class="text-slate-600">&bull;</span>
+                                <span><b class="text-slate-200">${itemsCount}</b> ítem(s)</span>
+                                ${totalUnitsPending > 0 ? `<span class="text-slate-600">&bull;</span><span class="font-mono text-slate-300">${totalUnitsPending} u. total</span>` : ''}
+                            </div>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <button onclick="event.stopPropagation(); deleteOrder('${order.id}')" class="text-rose-400 hover:text-rose-300 text-sm p-2 transition" title="Eliminar OC"><i class="fa-solid fa-trash"></i></button>
-                            <i class="fa-solid fa-chevron-${isOpen ? 'up' : 'down'} text-xs text-slate-400 p-2 transition"></i>
+                        <div class="flex items-center gap-1.5 shrink-0">
+                            <button onclick="event.stopPropagation(); deleteOrder('${order.id}')" class="w-8 h-8 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-950/60 flex items-center justify-center transition" title="Eliminar OC"><i class="fa-solid fa-trash text-xs"></i></button>
+                            <span class="w-8 h-8 rounded-lg bg-slate-900/70 border border-slate-700/60 text-slate-300 flex items-center justify-center transition"><i class="fa-solid fa-chevron-${isOpen ? 'up' : 'down'} text-xs"></i></span>
                         </div>
                     </div>
                     ${itemsHtml}
